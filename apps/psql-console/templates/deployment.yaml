@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: psql-console
+spec:
+  selector:
+    matchLabels:
+      name: psql-console
+  template:
+    metadata:
+      name: psql-console
+      labels:
+        name: psql-console
+    spec:
+      containers:
+      - name: psql-console
+        image: "ghcr.io/camptocamp/postgres:12-postgis-3"
+        command:
+          - /bin/bash
+          - -c
+        args:
+          - "tmux new-session -d && bash"
+        tty: true
+        stdin: true
+        livenessProbe:
+          timeoutSeconds: 3
+          initialDelaySeconds: 3
+          exec:
+            command:
+            - tmux
+            - list-sessions
+        env:
+          - name: SHELL
+            value: /bin/sh
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: host
+          - name: PGDATABASE
+            value: postgres
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: user
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: password

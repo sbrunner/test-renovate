@@ -1,0 +1,4 @@
+---
+apiVersion: "v2"
+name: "az-console"
+version: "0"

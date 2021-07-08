@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: az-console
+spec:
+  selector:
+    matchLabels:
+      name: az-console
+  template:
+    metadata:
+      name: az-console
+      labels:
+        name: az-console
+    spec:
+      containers:
+      - name: az-console
+        image: "mcr.microsoft.com/azure-cli:latest"
+        command:
+          - /bin/bash
+          - -c
+        args:
+          - "sleep infinity"
+        tty: true
+        stdin: true
+        env:
+          - name: SHELL
+            value: /bin/bash

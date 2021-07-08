@@ -11,7 +11,8 @@ spec:
     metadata:
       name: az-console
       labels:
-        name: az-console
+	name: az-console
+	aadpodidbinding: az
     spec:
       containers:
       - name: az-console

@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 
 imagePullSecrets: []
 replicaCount: 1
@@ -42,7 +42,7 @@ apacheExporter:
   image:
     repository: quay.io/lusitaniae/apache-exporter
     # repository: bitnami/apache-exporter
-    tag: 0.7.0
+    tag: v0.9.0
   resources: {}
 
 serviceAccount:

@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: "1.0"
+description: A standard Redis
+name: redis
+version: 1.0.0
+dependencies:
+  - name: redis
+    version: 14.6.6
+    repository: https://charts.bitnami.com/bitnami

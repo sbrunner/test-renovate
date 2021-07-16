@@ -4,5 +4,14 @@ description: The GeoMapFish demo
 name: gmf-demo
 version: 1.0.0
 dependencies:
+  - name: gmf-demo-config
+    repository: file://../../charts/projects/gmf-demo-config
+    import-values:
+      - data
+  - name: redis-config
+    repository: file://../../charts/redis-config
+    import-values:
+      - data
   - name: redis
-    repository: file://../../charts/redis
+    version: 14.6.6
+    repository: https://charts.bitnami.com/bitnami

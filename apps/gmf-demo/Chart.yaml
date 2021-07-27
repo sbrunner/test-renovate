@@ -4,10 +4,26 @@ description: The GeoMapFish demo
 name: gmf-demo
 version: 1.0.0
 dependencies:
-  - name: gmf-demo-config
-    repository: file://../../charts/projects/gmf-demo-config
+  - name: gmf-demo-config-int
+    repository: file://../../charts/projects/gmf-demo-config/int
     import-values:
-      - data
+      - child: .
+        parent: gmf-int
+  - name: gmf-demo-config-prod
+    repository: file://../../charts/projects/gmf-demo-config/prod
+    import-values:
+      - child: .
+        parent: gmf-prod
+  - name: gmf-demo-config-2-7
+    repository: file://../../charts/projects/gmf-demo-config/2-7
+    import-values:
+      - child: .
+        parent: gmf-int
+  - name: gmf-demo-config-2-7
+    repository: file://../../charts/projects/gmf-demo-config/2-7
+    import-values:
+      - child: .
+        parent: gmf-prod
   - name: redis-config
     repository: file://../../charts/redis-config
     import-values:

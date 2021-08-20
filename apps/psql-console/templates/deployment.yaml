@@ -37,14 +37,17 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: database
-                key: host
+                key: hostname
           - name: PGDATABASE
-            value: postgres
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: database
           - name: PGUSER
             valueFrom:
               secretKeyRef:
                 name: database
-                key: user
+                key: username
           - name: PGPASSWORD
             valueFrom:
               secretKeyRef:

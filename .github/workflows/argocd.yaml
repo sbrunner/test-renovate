@@ -10,6 +10,7 @@ jobs:
     runs-on: "ubuntu-latest"
     env:
       ARGOCD_SERVER: "${{ secrets.ARGOCD_SERVER }}"
+      # argocd.apps.gs-ch-dev.camptocamp.com:443
       ARGOCD_AUTH_TOKEN: "${{ secrets.ARGOCD_AUTH_TOKEN }}"
       ARGOCD_OPTS: "--grpc-web"
       KUBECTL_EXTERNAL_DIFF: "diff -u"

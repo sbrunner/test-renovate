@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  name: gs-gmf-demo
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        directories:
+          - path: apps/gmf-demo/*
+        repoURL: 'git@github.com:camptocamp/argocd-gs-platform-ch-development-apps.git'
+        revision: HEAD
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      destination:
+        namespace: 'gs-gmf-demo'
+        server: 'https://kubernetes.default.svc'
+      project: gs
+      source:
+        path: '{{path}}'
+        repoURL: 'git@github.com:camptocamp/argocd-gs-platform-ch-development-apps.git'
+        targetRevision: HEAD
+        helm:
+          valueFiles:
+            - values.yaml
+            - values-common.yaml

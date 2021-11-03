@@ -1,0 +1,20 @@
+---
+image:
+  tag: int
+
+redis:
+  external:
+    db: 1
+
+mapserver:
+  parallelism: 4
+
+qgisserver:
+  parallelism: 4
+
+geoportal:
+  env:
+    SQLALCHEMY_POOL_SIZE:
+      value: "2"
+    SQLALCHEMY_MAX_OVERFLOW:
+      value: "4"

@@ -1,5 +1,0 @@
-apiVersion: v2
-appVersion: "1.0"
-description: Demo configuration prod
-name: gmf-demo-config-prod
-version: 1.0.0

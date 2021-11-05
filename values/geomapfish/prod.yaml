@@ -1,0 +1,25 @@
+---
+image:
+  tag: prod
+
+c2c:
+  sentry:
+    enabled: true
+
+redis:
+  external:
+    db: 0
+
+geoportal:
+  replicaCount: 2
+
+mapserver:
+  replicaCount: 2
+  parallelism: 4
+
+qgisserver:
+  replicaCount: 2
+  parallelism: 4
+
+tilecloudchain:
+  replicaCount: 2

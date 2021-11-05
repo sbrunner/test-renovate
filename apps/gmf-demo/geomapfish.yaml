@@ -3,19 +3,19 @@ geomapfish:
     image:
       repository: camptocamp/geomapfishapp-geoportal
       tag: 2.7
+
+    env:
+      PRINT_URL:
+        value: print-url
+      AUTHTKT_SECRET:
+        value: secret012345678901234567890123456789012345678901234567890123456789
+
     resources:
       limits:
         memory: 400Mi
       requests:
         memory: 272Mi
         cpu: 88m
-
-    configMapNameOverride:
-      env: gmf-demo-geomapfish-env
-      secret: gmf-demo-geomapfish-secret
-    env:
-      PRINT_URL:
-        value: print-url
 
     config: &config
       image:

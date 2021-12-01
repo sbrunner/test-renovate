@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: '1.0'
+description: The monitoring
+name: monitoring
+version: 1.0.0
+dependencies:
+  - name: monitoring
+    repository: https://camptocamp.github.io/helm-monitoring/
+    version: 0.2.5

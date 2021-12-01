@@ -1,0 +1,151 @@
+config-env-base: &config-env-base
+  SENTRY_CLIENT_ENVIRONMENT:
+    value: int
+  LOG_LEVEL:
+    value: INFO
+  C2CWSGIUTILS_LOG_LEVEL:
+    value: INFO
+  GUNICORN_LOG_LEVEL:
+    value: WARN
+  OTHER_LOG_LEVEL:
+    value: WARN
+  REDIS_DB:
+    value: '1'
+
+mutualize:
+  configMapNameOverride: &configMapNameOverride
+    env: mutualize-prod-env
+
+  config:
+    replicaCount: 1
+    image: &config-image
+      repository: camptocamp/shared_config_manager
+      tag: '3.2'
+      atleastOldDays: 20
+
+    env:
+      <<: *config-env-base
+
+    annotations:
+      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod'
+
+    resources:
+      requests:
+        memory: 150.1Mi
+        cpu: 6m
+      limits:
+        memory: 256Mi
+
+  print:
+    replicaCount: 2
+    image:
+      repository: camptocamp/mapfish_print
+      tag: &print-tag '3.29'
+      atleastOldDays: 20
+
+    env:
+      SENTRY_RELEASE:
+        value: *print-tag
+      SENTRY_ENVIRONMENT:
+        value: prod
+      PGSCHEMA:
+        value: prod
+
+    annotations:
+      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,mutualize-prod-print,database,gmf-blob-storage'
+
+    resources:
+      requests:
+        memory: 3.85Gi
+        cpu: 1m
+      limits:
+        memory: 6300Mi
+
+    config: &config
+      image: *config-image
+      env:
+        <<: *config-env-base
+        MUTUALIZED_PRINT_URL:
+          value: https://geoservices.camptocamp.com/print/
+      resources:
+        requests:
+          memory: 38Mi
+          cpu: 1.1m
+        limits:
+          memory: 1024Mi
+
+  logs:
+    replicaCount: 2
+    image:
+      repository: camptocamp/mapfish-print-logs
+      tag: '1.3'
+      atleastOldDays: 20
+
+    env:
+      REDIS_DB:
+        value: '2'
+
+    annotations:
+      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,database'
+
+    resources:
+      requests:
+        cpu: 2m
+        memory: 107.5Mi
+      limits:
+        memory: 128Mi
+
+  tilecloudchain: &tilecloudchain
+    image:
+      repository: camptocamp/tilecloud-chain
+      tag: '1.17'
+      atleastOldDays: 20
+
+    mainConfig:
+      redis:
+        db: 3
+
+    env:
+      REDIS_DB:
+        value: '3'
+
+    annotations:
+      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,mutualize-prod-tcc-main-config,gmf-blob-storage'
+
+    config: *config
+
+    resources:
+      requests:
+        memory: 188Mi
+        cpu: 15m
+      limits:
+        memory: 340Mi
+
+  tilecloudchainSlave:
+    <<: *tilecloudchain
+
+    resources:
+      requests:
+        memory: 110.1Mi
+        cpu: 3.1m
+      limits:
+        memory: 240Mi
+
+  ingress:
+    hosts:
+      - name: main
+        host: geoservices.camptocamp.com
+        tls:
+          secretName: main-print-prod-tls
+      - name: test
+        host: mutualize.apps.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: test-print-prod-tls
+      - name: blue
+        host: mutualize.apps.blue.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: blue-print-prod-tls
+      - name: green
+        host: mutualize.apps.green.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: green-print-prod-tls

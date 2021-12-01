@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+
+
+import argparse
+import os
+import subprocess
+import sys
+
+import yaml
+
+
+def main() -> None:
+    """
+    Main function.
+    """
+
+    argparser = argparse.ArgumentParser("Generate the k8s file from the template")
+    argparser.add_argument(
+        "--no-update", dest="update", help="Don't run dependency update", default=True, action="store_false"
+    )
+    argparser.add_argument("--kube-version", help="The kubernetes version", default="1.20.0")
+    argparser.add_argument("--helm", help="The used helm command", default=os.environ.get("HELM", "helm"))
+    argparser.add_argument(
+        "--cluster-apps",
+        help="The cluster apps repository path",
+        default="../argocd-gs-platform-ch-development-cluster-apps",
+    )
+    argparser.add_argument("namespace", help="The namespace")
+    argparser.add_argument("application", help="The application")
+    args = argparser.parse_args()
+
+    with open(
+        os.path.join(args.cluster_apps, "apps", "gmf-projects", "values.yaml"), "r", encoding="utf-8"
+    ) as f:
+        values = yaml.load(f.read())
+        application = values["gmfProjects"][args.namespace]["apps"][args.application]
+
+    if args.update:
+        subprocess.run(
+            [args.helm, "dependency", "update"], check=True, cwd=application["path"], stdout=sys.stderr
+        )
+    subprocess.run(
+        [
+            args.helm,
+            "template",
+            f"{args.application}",
+            ".",
+            f"--kube-version={args.kube_version}",
+            f"--namespace={args.namespace}",
+        ]
+        + [f"--values={values}" for values in application["valuesFiles"]],
+        check=True,
+        cwd=application["path"],
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+
+import argparse
+import datetime
+import math
+import sys
+import time
+
+import numpy as np
+import requests
+import yaml
+
+
+def call(params, cookie, query="query"):
+    response = requests.get(
+        "https://gs-metrics-prometheus.apps.openshift-ch-1.camptocamp.com/api/v1/" + query,
+        params=params,
+        headers={"Cookie": cookie},
+        timeout=30,
+    )
+    try:
+        response_json = response.json()
+        if response_json.get("status") != "success":
+            print(f"{query}: {params}")
+            print(response_json.get("error", response_json.get("message")))
+            sys.exit(1)
+        return response_json
+    except Exception:
+        print(f"{query}: {params}")
+        print(response.text)
+        sys.exit(1)
+
+
+def get(arguments):
+    cookie = arguments.cookie
+    if cookie.startswith("Cookie: "):
+        cookie = cookie[len("Cookie: ") :]
+
+    with open("requests-memory.yaml", "w") as dst:
+        dst.write(
+            yaml.dump(
+                call(
+                    {
+                        "query": "quantile_over_time(0.5, kube_pod_container_resource_requests_memory_bytes[{}h])".format(
+                            arguments.considered_hours
+                        ),
+                        "time": time.time(),
+                    },
+                    cookie,
+                )
+            )
+        )
+
+    with open("container-memory.yaml", "w") as dst:
+        dst.write(
+            yaml.dump(
+                call(
+                    {
+                        "query": """container_memory_rss{pod_name!~"tiller-.*", name=~".+", container_name!="POD"}""",
+                        "start": time.time() - arguments.considered_hours * 3600,
+                        "end": time.time(),
+                        "step": str(arguments.step_minutes * 60),
+                    },
+                    cookie,
+                    "query_range",
+                )
+            )
+        )
+
+    with open("requests-cpu.yaml", "w") as dst:
+        dst.write(
+            yaml.dump(
+                call(
+                    {
+                        "query": "quantile_over_time(0.5, kube_pod_container_resource_requests_cpu_cores[{}h])".format(
+                            arguments.considered_hours
+                        ),
+                        "time": time.time(),
+                    },
+                    cookie,
+                )
+            )
+        )
+
+    with open("container-cpu.yaml", "w") as dst:
+        dst.write(
+            yaml.dump(
+                call(
+                    {
+                        "query": """delta(container_cpu_usage_seconds_total{pod_name!~"tiller-.*", name=~".+", container_name!="POD"}[1h])""",
+                        "start": time.time() - arguments.considered_hours * 3600,
+                        "end": time.time(),
+                        "step": str(arguments.step_minutes * 60),
+                    },
+                    cookie,
+                    "query_range",
+                )
+            )
+        )
+
+
+def format_number(value):
+    return (
+        "{:.3f}" if value < 1.7 else "{:.2f}" if value < 17 else f"{value:.1f}" if value < 170 else "{:.0f}"
+    ).format(value)
+
+
+def format(value, cpu=False):
+    if cpu:
+        return format_number(value * 1000) + "m"
+    else:
+        if value < 1024 * 1024:
+            return format_number(value / 1024) + "Ki"
+        if value < 1024 * 1024 * 1024:
+            return format_number(value / 1024 / 1024) + "Mi"
+        return format_number(value / 1024 / 1024 / 1024) + "Gi"
+
+
+def process(arguments):
+    min_memory = 1000
+    min_cpu = 0.001
+    with open("requests-cpu.yaml") as src:
+        requests_cpu = yaml.safe_load(src.read())
+    with open("container-cpu.yaml") as src:
+        container_cpu = yaml.safe_load(src.read())
+    value_factor_cpu = 1 / 4000
+    with open("requests-memory.yaml") as src:
+        requests_memory = yaml.safe_load(src.read())
+    with open("container-memory.yaml") as src:
+        container_memory = yaml.safe_load(src.read())
+
+    quota = {}
+
+    def quota_default():
+        return {
+            "requests_memory": 0,
+            "requests_cpu": 0,
+        }
+
+    for requests_, value in (
+        (requests_memory, "requests_memory"),
+        (requests_cpu, "requests_cpu"),
+    ):
+        for result in requests_["data"]["result"]:
+            quota.setdefault(
+                (
+                    result["metric"]["namespace"],
+                    "-".join(result["metric"]["pod"].split("-")[:-2]),
+                    result["metric"]["container"],
+                ),
+                quota_default(),
+            )[value] = float(result["value"][1])
+
+    quotas_by_config = {}
+
+    def quotas_by_config_default():
+        return {"containers": {}, "values_memory": [], "values_cpu": []}
+
+    def container_default():
+        return {"memory": [], "cpu": []}
+
+    no_quota = set()
+    for values_, values_key, container_key in (
+        (container_memory, "values_memory", "memory"),
+        (container_cpu, "values_cpu", "cpu"),
+    ):
+        for result in values_["data"]["result"]:
+            if result["metric"]["namespace"] in ("gs-postgresql",):
+                continue
+            key = (
+                result["metric"]["namespace"],
+                "-".join(result["metric"]["pod_name"].split("-")[:-2]),
+                result["metric"]["container_name"],
+            )
+            if key not in quota:
+                no_quota.add(key)
+                continue
+            else:
+                new_key = (quota[key]["requests_memory"], quota[key]["requests_cpu"])
+
+            value = quotas_by_config.setdefault(new_key, quotas_by_config_default())
+
+            values = [(datetime.datetime.fromtimestamp(r[0]), r[1]) for r in result["values"]]
+            if not arguments.weekend:
+                values = [r for r in values if r[0].weekday() < 6]
+            values = [r for r in values if arguments.start_hour <= r[0].hour < arguments.end_hour]
+            values = [float(r[1]) for r in values]
+            value["containers"].setdefault(key, container_default())[container_key].extend(values)
+            value[values_key].extend(values)
+
+    for key in no_quota:
+        print("No quota found for {} / {} / {}".format(*key))
+    print()
+
+    for key, value in quotas_by_config.items():
+        if len(value["values_memory"]) > 0:
+            if value["values_memory"]:
+                current_memory = max(
+                    np.percentile(np.array(value["values_memory"]), arguments.percentile),
+                    min_memory,
+                )
+            else:
+                print(
+                    "WARNING: missing memory values for current request memory: "
+                    f"{format(key[0])}, current request cpu: {format(current_cpu, True)}."
+                )
+                current_memory = 0
+            if value["values_cpu"]:
+                current_cpu = max(
+                    np.percentile(np.array(value["values_cpu"]), arguments.percentile) * value_factor_cpu,
+                    min_cpu,
+                )
+            else:
+                print(
+                    "WARNING: missing CPU values for current request memory: "
+                    f"{format(key[0])}, current request cpu: {format(current_cpu, True)}."
+                )
+                current_cpu = 0
+            ratio = key[0] / current_memory
+            if (
+                abs(math.log(ratio)) > abs(math.log(arguments.max_ratio))
+                or (abs(key[0] - current_memory) > arguments.max_diff * 1024 * 1024)
+            ) and not key[0] == min_memory:
+                print(
+                    "current request memory: {request_memory}, used memory: {used_memory}, "
+                    "current request cpu: {request_cpu}, used cpu: {used_cpu}".format(
+                        request_memory=format(key[0]),
+                        used_memory=format(current_memory),
+                        request_cpu=format(key[1], True),
+                        used_cpu=format(current_cpu, True),
+                    )
+                )
+                for container, values in value["containers"].items():
+                    print(
+                        "    {} / {} / {} ({} - {})".format(
+                            *container,
+                            format(
+                                np.percentile(np.array(values["memory"]), arguments.percentile)
+                                if len(values["memory"]) > 0
+                                else -1
+                            ),
+                            format(
+                                np.percentile(np.array(values["cpu"]), arguments.percentile)
+                                * value_factor_cpu
+                                if len(values["cpu"]) > 0
+                                else -1,
+                                True,
+                            ),
+                        )
+                    )
+        else:
+            print("No values for:")
+            for container, values in value["containers"].items():
+                print("    {} / {} / {}".format(*container))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command")
+    subparsers.required = True
+
+    parser_get = subparsers.add_parser("get", help="get the data")
+    parser_get.add_argument("--considered-hours", type=int, default=24 * 1)
+    parser_get.add_argument("--step-minutes", type=int, default=120)
+    parser_get.add_argument("cookie")
+    parser_get.set_defaults(func=get)
+
+    parser_process = subparsers.add_parser("process", help="process the data")
+    parser_process.add_argument("--max-ratio", type=float, default=2)
+    parser_process.add_argument("--max-diff", type=float, default=20)
+    parser_process.add_argument("--percentile", type=int, default=95)
+    parser_process.add_argument("--start-hour", type=int, default=0)
+    parser_process.add_argument("--end-hour", type=int, default=24)
+    parser_process.add_argument("--no-weekend", dest="weekend", action="store_false")
+    parser_process.set_defaults(func=process)
+
+    arguments = parser.parse_args()
+    arguments.func(arguments)
+
+
+if __name__ == "__main__":
+    main()

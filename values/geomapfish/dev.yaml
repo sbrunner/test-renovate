@@ -1,22 +1,25 @@
----
 # Values that can be used in integration environment to debug
 # Comment because it shouldn't be directly included
 
-geoportal:
-  env:
-    {}
-    # Cache logs
-    # DOGPILECACHE_LOG_LEVEL:
-    #  value: DEBUG
-    # Logs SQL queries
-    # SQL_LOG_LEVEL:
-    #  value: INFO
-    # With c2c interface set the logging <name>=<level>
-    # c2cwsgiutils.stats_pyramid._db_spy=DEBUG To get the simplified SQL statements with duration
+geomapfish:
+  geoportal:
+    env:
+      {}
+      # Cache logs
+      # DOGPILECACHE_LOG_LEVEL:
+      #  value: DEBUG
+      # Logs SQL queries
+      # SQL_LOG_LEVEL:
+      #  value: INFO
+      # With c2c interface set the logging <name>=<level>
+      # c2cwsgiutils.stats_pyramid._db_spy=DEBUG To get the simplified SQL statements with duration
 
-qgisserver:
-  env:
-    {}
-    # Should be used sparingly
-    # QGIS_SERVER_LOG_LEVEL:
-    #  value: '0'
+  qgisserver:
+    env:
+      {}
+      # Should be used sparingly
+      # QGIS_SERVER_LOG_LEVEL:
+      #   value: '0'
+      # The result stack traces will be available in /var/log/qgis.log
+      # QGIS_CATCH_SEGV
+      #   value: '1'

@@ -1,2 +1,4 @@
 apps/*/Chart.lock
 apps/*/charts/
+apps/*/*/Chart.lock
+apps/*/*/charts/

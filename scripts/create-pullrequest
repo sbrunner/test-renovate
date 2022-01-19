@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+git checkout -b update-images-hash
+git add --all
+git commit --message="Update the images hash"
+git push update-images-hash
+gh pr create --fill

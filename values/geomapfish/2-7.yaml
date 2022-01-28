@@ -83,7 +83,7 @@ shared:
       name: env
       key: QGISSERVER_URL
     BASICAUTH:
-      value: "false"
+      value: 'false'
 
 geomapfish:
   geoportal:
@@ -111,24 +111,24 @@ geomapfish:
         SENTRY_TAG_SERVICE:
           value: geoportal
         SQLALCHEMY_POOL_RECYCLE:
-          value: "30"
+          value: '30'
         SQLALCHEMY_POOL_SIZE:
-          value: "1"
+          value: '1'
         SQLALCHEMY_MAX_OVERFLOW:
-          value: "10"
+          value: '10'
         SQLALCHEMY_SLAVE_POOL_RECYCLE:
-          value: "30"
+          value: '30'
         SQLALCHEMY_SLAVE_POOL_SIZE:
-          value: "5"
+          value: '5'
         SQLALCHEMY_SLAVE_MAX_OVERFLOW:
-          value: "10"
+          value: '10'
         REDIS_LOCK_TIMEOUT:
-          value: "180" # 3 minutes
+          value: '180' # 3 minutes
         SENTRY_TRACES_SAMPLE_RATE:
-          value: "0.1"
+          value: '0.1'
         C2C_DB_MAINTENANCE_VIEW_ENABLED:
-          value: "1"
-      configMapNameOverride: *configMapNameOverride
+          value: '1'
+      configMapNameOverride: &configMapNameOverride {}
 
       #prometheus: true
       resources:
@@ -205,7 +205,7 @@ geomapfish:
         SENTRY_TAG_SERVICE:
           value: dbstats
         STATSD_USE_TAGS:
-          value: "1"
+          value: '1'
         STATSD_TAG_CHART:
           type: configMap
           name: env
@@ -219,9 +219,9 @@ geomapfish:
           name: env
           key: RELEASE_NAMESPACE
         C2CWSGIUTILS_STATS_DB_TRYNUMBER:
-          value: "10"
+          value: '10'
         C2CWSGIUTILS_STATS_DB_SLEEP:
-          value: "30"
+          value: '30'
         LOG_LEVEL:
           value: INFO
 
@@ -243,9 +243,9 @@ geomapfish:
         name: env
         key: PGOPTIONS
       MAX_PROCESSES:
-        value: "1"
+        value: '1'
       MAPSERVER_CATCH_SEGV:
-        value: "1"
+        value: '1'
       SEGFAULT_SIGNALS:
         value: all
     configMapNameOverride: *configMapNameOverride
@@ -305,35 +305,35 @@ geomapfish:
       FCGID_IO_TIMEOUT:
         value: 120
       CPL_VSIL_CURL_USE_CACHE:
-        value: "TRUE"
+        value: 'TRUE'
       CPL_VSIL_CURL_CACHE_SIZE:
-        value: "128000000"
+        value: '128000000'
       CPL_VSIL_CURL_USE_HEAD:
-        value: "FALSE"
+        value: 'FALSE'
       GDAL_DISABLE_READDIR_ON_OPEN:
-        value: "TRUE"
+        value: 'TRUE'
       QGIS_SERVER_LOG_LEVEL:
-        value: "2" # 0 for verbose
+        value: '2' # 0 for verbose
       QGIS_CUSTOM_CONFIG_PATH:
         value: /tmp
       QGIS_SERVER_TRUST_LAYER_METADATA:
-        value: "TRUE"
+        value: 'TRUE'
       QGIS_SERVER_PARALLEL_RENDERING:
-        value: "FALSE"
+        value: 'FALSE'
       MAX_CACHE_LAYERS:
-        value: "100"
+        value: '100'
       QGIS_SERVER_IGNORE_BAD_LAYERS:
-        value: "TRUE"
+        value: 'TRUE'
       QGIS_SERVER_CACHE_SIZE:
-        value: "60" # MB
+        value: '60' # MB
       QGIS_SERVER_WMS_MAX_HEIGHT:
-        value: "5000"
+        value: '5000'
       QGIS_SERVER_WMS_MAX_WIDTH:
-        value: "5000"
+        value: '5000'
       QGIS_SERVER_API_WFS3_MAX_LIMIT:
-        value: "10000"
+        value: '10000'
       QGIS_SERVER_DISABLE_GETPRINT:
-        value: "TRUE"
+        value: 'TRUE'
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES:
         value: /etc/qgisserver/
       QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE:
@@ -376,7 +376,7 @@ geomapfish:
 
   tilecloudchain:
     image:
-      tag: "master"
+      tag: 'master'
     env:
       METATILE_NB_THREAD:
         value: 8
@@ -394,7 +394,7 @@ geomapfish:
       # TILECLOUD_CHAIN_LOG_LEVEL:
       #  value: DEBUG
       SENTRY_TRACES_SAMPLE_RATE:
-        value: "0.1"
+        value: '0.1'
     resources:
       requests:
         memory: 188Mi

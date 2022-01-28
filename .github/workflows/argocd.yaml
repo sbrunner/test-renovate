@@ -1,5 +1,5 @@
 ---
-name: "ArgoCD"
+name: 'ArgoCD'
 
 on:
   pull_request: {}
@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     env:
-      ARGOCD_SERVER: "${{ secrets.ARGOCD_SERVER }}"
+      ARGOCD_SERVER: '${{ secrets.ARGOCD_SERVER }}'
       # argocd.apps.gs-ch-dev.camptocamp.com:443
-      ARGOCD_AUTH_TOKEN: "${{ secrets.ARGOCD_AUTH_TOKEN }}"
-      ARGOCD_OPTS: "--grpc-web"
-      KUBECTL_EXTERNAL_DIFF: "diff -u"
+      ARGOCD_AUTH_TOKEN: '${{ secrets.ARGOCD_AUTH_TOKEN }}'
+      ARGOCD_OPTS: '--grpc-web'
+      KUBECTL_EXTERNAL_DIFF: 'diff -u'
     steps:
-      - name: "Setup ArgoCD"
+      - name: 'Setup ArgoCD'
         run: |
           mkdir "$GITHUB_WORKSPACE/bin"
           curl -L https://github.com/argoproj/argo-cd/releases/download/v2.0.3/argocd-linux-amd64 > "$GITHUB_WORKSPACE/bin/argocd"
           echo "$GITHUB_WORKSPACE/bin" >> "$GITHUB_PATH"
           chmod +x "$GITHUB_WORKSPACE/bin/argocd"
 
-      - name: "App diff"
-        id: "diff"
+      - name: 'App diff'
+        id: 'diff'
         run: |
           argocd app list -ojson | jq -r ".[] | select(.spec.source.repoURL == \"git@github.com:$GITHUB_REPOSITORY.git\")|(.metadata.name)" | while read appname; do
             argocd app diff "$appname" --loglevel warn --revision "${{github.head_ref}}" || true

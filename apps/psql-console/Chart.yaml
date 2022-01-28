@@ -1,4 +1,4 @@
 ---
-apiVersion: "v2"
-name: "psql-console"
-version: "0"
+apiVersion: 'v2'
+name: 'psql-console'
+version: '0'

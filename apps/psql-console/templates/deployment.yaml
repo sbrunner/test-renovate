@@ -14,42 +14,42 @@ spec:
         name: psql-console
     spec:
       containers:
-      - name: psql-console
-        image: "ghcr.io/camptocamp/postgres:12-postgis-3"
-        command:
-          - /bin/bash
-          - -c
-        args:
-          - "tmux new-session -d && bash"
-        tty: true
-        stdin: true
-        livenessProbe:
-          timeoutSeconds: 3
-          initialDelaySeconds: 3
-          exec:
-            command:
-            - tmux
-            - list-sessions
-        env:
-          - name: SHELL
-            value: /bin/sh
-          - name: PGHOST
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: hostname
-          - name: PGDATABASE
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: database
-          - name: PGUSER
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: username
-          - name: PGPASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: password
+        - name: psql-console
+          image: 'ghcr.io/camptocamp/postgres:12-postgis-3'
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - 'tmux new-session -d && bash'
+          tty: true
+          stdin: true
+          livenessProbe:
+            timeoutSeconds: 3
+            initialDelaySeconds: 3
+            exec:
+              command:
+                - tmux
+                - list-sessions
+          env:
+            - name: SHELL
+              value: /bin/sh
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: hostname
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: database
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: password

@@ -1,0 +1,17 @@
+name: Update image hash - Cron
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+
+jobs:
+  audit:
+    runs-on: ubuntu-20.04
+    name: Update image hash - Cron
+    timeout-minutes: 10
+
+    steps:
+      - run: python3 -m pip install ci/requirements.txt
+      - run: scripts/update-image-hash
+      - run: c2cciutils-checks --fix --check=prettier
+      - run: scripts/create-pullrequest

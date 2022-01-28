@@ -1,6 +1,6 @@
 ---
-# Values that can be used in integration environement to debug
-# Comment because it shouldn't be dirrectly included
+# Values that can be used in integration environment to debug
+# Comment because it shouldn't be directly included
 
 geoportal:
   env:
@@ -8,7 +8,7 @@ geoportal:
     # Cache logs
     # DOGPILECACHE_LOG_LEVEL:
     #  value: DEBUG
-    # Logs SQL querries
+    # Logs SQL queries
     # SQL_LOG_LEVEL:
     #  value: INFO
     # With c2c interface set the logging <name>=<level>

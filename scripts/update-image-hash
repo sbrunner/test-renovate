@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+
+import argparse
+import glob
+import subprocess
+from datetime import datetime, timedelta
+from typing import Any, Dict, Set
+
+import ruamel.yaml.error
+from ruamel.yaml import YAML, CommentToken
+
+
+def find_images(yaml: Dict[str, Any], images: Set[str]) -> None:
+    if not isinstance(yaml, dict):
+        return
+    for key, value in yaml.items():
+        if key == "image":
+            if "repository" in value and "tag" in value:
+                images.add(f"{value['repository']}:{value['tag']}")
+            else:
+                print(f"Wrong image: {value}")
+        elif isinstance(value, dict):
+            find_images(value, images)
+
+
+def update_images_sha(yaml: Dict[str, Any], images_data: Dict[str, Dict[str, datetime]]) -> None:
+    if not isinstance(yaml, dict):
+        return
+    for key, value in yaml.items():
+        if key == "image":
+            if "repository" in value and "tag" in value and not value.get("lock", False):
+                at_least = datetime.now() - timedelta(days=value.get("atleastOldDays", 0))
+                shas = [
+                    (sha, date)
+                    for sha, date in images_data[f"{value['repository']}:{value['tag']}"].items()
+                    if date <= at_least
+                ]
+                shas.sort(key=lambda x: x[1])
+                if shas:
+                    value["sha"] = shas[-1][0]
+                    value.yaml_add_eol_comment("Managed by update-image-hash script", "sha")
+                    value.ca.items.clear()
+                    value.ca.items["sha"] = [
+                        None,
+                        None,
+                        CommentToken("\n\n", ruamel.yaml.error.CommentMark(0), None),
+                        None,
+                    ]
+
+        elif isinstance(value, dict):
+            update_images_sha(value, images_data)
+
+
+def main() -> None:
+
+    parser = argparse.ArgumentParser(description="Update the images hash.")
+    parser.add_argument("images", metavar="IMAGES", nargs="*", help="the images to be updated")
+    args = parser.parse_args()
+
+    images = set(args.images)
+    yaml = YAML()
+    yaml.default_flow_style = False
+
+    if not images:
+        for filename in glob.glob("**/*.yaml", recursive=True):
+            if filename == "secrets.yaml" or filename.startswith("secrets-"):
+                continue
+            print(f"Open file: {filename}")
+            with open(filename, "r", encoding="utf-8") as f:
+                find_images(yaml.load(f), images)
+
+    with open("data/images.yaml", "r", encoding="utf-8") as f:
+        images_data = yaml.load(f)
+
+        for image in images:
+            print(f"Process image: {image}")
+            line = [
+                line
+                for line in subprocess.run(["docker", "pull", image], check=True, stdout=subprocess.PIPE)
+                .stdout.decode()
+                .split("\n")
+                if line.startswith("Digest:")
+            ][0]
+            sha = line.split(":")[2]
+            print("Get sha:", sha)
+            if sha not in images_data.get(image, {}):
+                images_data.setdefault(image, {})[sha] = datetime.now().isoformat()
+
+    with open("data/images.yaml", "w", encoding="utf-8") as f:
+        yaml.dump(images_data, f)
+
+    for image, data in images_data.items():
+        for sha, date in data.items():
+            data[sha] = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%f")
+
+    for filename in glob.glob("**/values*.yaml", recursive=True):
+        print(f"Open file: {filename}")
+        with open(filename, "r", encoding="utf-8") as f:
+            values = yaml.load(f)
+            update_images_sha(values, images_data)
+        with open(filename, "w", encoding="utf-8") as f:
+            yaml.dump(values, f)
+
+
+if __name__ == "__main__":
+    main()

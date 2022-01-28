@@ -15,15 +15,15 @@ spec:
         aadpodidbinding: az
     spec:
       containers:
-      - name: az-console
-        image: "mcr.microsoft.com/azure-cli:latest"
-        command:
-          - /bin/bash
-          - -c
-        args:
-          - "sleep infinity"
-        tty: true
-        stdin: true
-        env:
-          - name: SHELL
-            value: /bin/bash
+        - name: az-console
+          image: 'mcr.microsoft.com/azure-cli:latest'
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - 'sleep infinity'
+          tty: true
+          stdin: true
+          env:
+            - name: SHELL
+              value: /bin/bash

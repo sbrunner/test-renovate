@@ -15,6 +15,6 @@ qgisserver:
 geoportal:
   env:
     SQLALCHEMY_POOL_SIZE:
-      value: "2"
+      value: '2'
     SQLALCHEMY_MAX_OVERFLOW:
-      value: "4"
+      value: '4'

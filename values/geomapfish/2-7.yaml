@@ -102,8 +102,7 @@ geomapfish:
         tag: 2.7
 
       env:
-        <<: *configEnv
-        <<: *c2cwsgiutilsEnv
+        <<: [*configEnv, *c2cwsgiutilsEnv]
         SENTRY_CLIENT_RELEASE:
           type: configMap
           name: env
@@ -143,8 +142,7 @@ geomapfish:
       mainStatic: true
 
       env:
-        <<: *configEnv
-        <<: *c2cwsgiutilsEnv
+        <<: [*configEnv, *c2cwsgiutilsEnv]
         SENTRY_CLIENT_RELEASE:
           type: configMap
           name: env
@@ -188,8 +186,7 @@ geomapfish:
         - main_static
 
       env:
-        <<: *dbEnv
-        <<: *c2cwsgiutilsEnv
+        <<: [*dbEnv, *c2cwsgiutilsEnv]
         SENTRY_URL:
           type: configMap
           name: env

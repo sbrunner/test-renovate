@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 */3 * * *'
 
+env:
+  HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
+
 jobs:
   audit:
     runs-on: ubuntu-20.04

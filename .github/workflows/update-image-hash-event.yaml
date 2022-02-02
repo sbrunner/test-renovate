@@ -3,7 +3,7 @@ name: Update image hash - Event
 on:
   repository_dispatch:
     types:
-      - image-updtae
+      - image-update
     inputs:
       name:
         description: The image name
@@ -21,7 +21,14 @@ jobs:
           fetch-depth: 0
           ref: master
 
+      - uses: camptocamp/initialise-gopass-summon-action@v2
+        with:
+          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
+          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
+          patterns: docker
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
+
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
-      - run: scripts/update-image-hash ${{ github.event.inputs.name }}
+      - run: scripts/update-image-hash ${{ github.event.client_payload.name }}
       - run: c2cciutils-checks --fix --check=prettier
       - run: scripts/create-pullrequest

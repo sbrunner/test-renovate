@@ -1,9 +1,0 @@
-apiVersion: v2
-appVersion: '1.0'
-description: The GeoMapFish demo
-name: gmf-demo
-version: 1.0.0
-dependencies:
-  - name: geomapfish
-    repository: https://camptocamp.github.io/helm-geomapfish/
-    version: 0.1.1

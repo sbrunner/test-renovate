@@ -1,0 +1,217 @@
+geomapfish:
+  geoportal:
+    ingress:
+      hosts: &hosts
+        - name: main
+          host: geomapfish-demo-2-7.camptocamp.com
+          tls:
+            secretName: main-tls
+        - name: test
+          host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+          tls:
+            secretName: test-tls
+        - name: blue
+          host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+          tls:
+            secretName: blue-tls
+        - name: green
+          host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+          tls:
+            secretName: green-tls
+      # Specific to demo
+      additionalPaths:
+        customFeedback:
+          path: /custom/
+          service: geomapfish-prod-2-7-custom-feedback
+        tiles:
+          path: /tiles/
+          service: geomapfish-prod-2-7-tiles
+
+    env:
+      AZURE_CONTAINER_NAME:
+        value: balanced-woodcock
+      PRINT_APP:
+        value: zen-carson-2-7
+      # Should be removed on non demo project
+      PRINT_URL:
+        value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
+        order: 1
+      # Specific to demo
+      WMTS_URL:
+        value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
+      SMTP_PASSWORD:
+        type: secret
+        name: secrets
+        key: SMTP_PASSWORD
+      SMTP_USER:
+        type: secret
+        name: secrets
+        key: SMTP_USER
+
+    config: &config
+      image:
+        repository: camptocamp/geomapfishdemo-config
+        tag: prod-2-7
+
+    tools:
+      enabled: true
+
+    configMapNameOverride: &configMapNameOverride
+      env: geomapfish-prod-2-7-env
+
+  mapserver:
+    configMapNameOverride: *configMapNameOverride
+    config:
+      <<: *config
+      # Specific to demo
+      env:
+        OSM_PGHOST:
+          type: secret
+          name: database-osm
+          key: hostname
+        OSM_PGHOST_SLAVE:
+          type: secret
+          name: database-osm
+          key: hostnameSlave
+        OSM_PGPORT:
+          type: secret
+          name: database-osm
+          key: port
+        OSM_PGPORT_SLAVE:
+          type: secret
+          name: database-osm
+          key: portSlave
+        OSM_PGDATABASE:
+          type: secret
+          name: database-osm
+          key: database
+        OSM_PGUSER:
+          type: secret
+          name: database-osm
+          key: username
+        OSM_PGPASSWORD:
+          type: secret
+          name: database-osm
+          key: password
+
+  qgisserver:
+    env:
+      QGIS_SERVER_LANDING_PAGE_PREFIX:
+        value: /mapserv_proxy/qgis
+    readinessProbe:
+      httpGet:
+        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+    livenessProbe:
+      httpGet:
+        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+
+    configMapNameOverride: *configMapNameOverride
+    config: *config
+
+  postgresql:
+    schema: main_2_7
+    staticSchema: static_2_7
+
+  sentry:
+    key: 8dfa6c72fcad48c487c6a89b22ce581b
+    project: 1851011
+
+  mutualize:
+    repository: camptocamp/demo_geomapfish
+    branch: prod-2-7
+    # Should be removed on non demo project
+    tccService: mutualize-int-tcc.gs-mutualize.svc.cluster.local
+    configs:
+      zen-carson-2-7:
+        dir: print/print-apps/geomapfish
+      tilecloudchain-demo-2-7:
+        hosts:
+          - name: main
+            host: geomapfish-demo-2-7.camptocamp.com
+          - name: test
+            host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+          - name: blue
+            host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+          - name: green
+            host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+        dir: tilegeneration
+        tilecloudchain: true
+        env:
+          TILEGENERATION_AZURE_CONTAINER: smashing-panther
+          MAPSERVER_URL: http://geomapfish-prod-2-7-mapserver.gs-gmf-demo.svc.cluster.local/
+          VISIBLE_WEB_PROTOCOL: https
+          VISIBLE_WEB_HOST: geomapfish-demo-2-7.camptocamp.com
+          VISIBLE_ENTRY_POINT: /
+
+fts-cron:
+  configMapNameOverride: *configMapNameOverride
+  initContainers:
+    config: *config
+
+# Specific to demo
+custom-feedback:
+  replicaCount: 1
+
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podAnnotations:
+    co.elastic.logs/enabled: 'true'
+  image:
+    pullPolicy: Always
+
+  configMapNameOverride: *configMapNameOverride
+
+  service:
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+        targetPort: http
+
+  containers:
+    feedback:
+      image:
+        repository: 'camptocamp/geomapfishdemo-custom'
+        tag: 'prod-2-7'
+      env:
+        GUNICORN_CMD_ARGS:
+          value: --bind=:8080 --worker-class=gthread --threads=10 --workers=1 --timeout=120
+            --max-requests=1000 --max-requests-jitter=100 --worker-tmp-dir=/dev/shm  --limit-request-line=8190
+        GEOPORTAL_INTERNAL_URL:
+          value: http://prod-2-7-c2cgeoportal-geoportal
+        VISIBLE_WEB_HOST:
+          value: geomapfish-demo-2-7.camptocamp.com
+        SQLALCHEMY_URL:
+          type: secret
+          name: database
+          key: sqlalchemyUrl
+        SQLALCHEMY_SLAVE_URL:
+          type: secret
+          name: database
+          key: sqlalchemyUrl
+        PGSCHEMA:
+          value: main_2_7
+      ports:
+        - name: http
+          protocol: TCP
+          containerPort: 8080
+      resources:
+        requests:
+          cpu: 4m
+          memory: 50Mi
+        limits:
+          memory: 100Mi
+      readinessProbe:
+        httpGet:
+          path: /c2c/health_check
+          port: http
+        initialDelaySeconds: 2
+        timeoutSeconds: 10
+      livenessProbe:
+        httpGet:
+          path: /c2c/health_check
+          port: http
+        initialDelaySeconds: 2
+        timeoutSeconds: 10
+        periodSeconds: 30
+        failureThreshold: 5

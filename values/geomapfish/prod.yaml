@@ -1,25 +1,22 @@
----
-image:
-  tag: prod
-
-c2c:
-  sentry:
-    enabled: true
-
-redis:
-  external:
+geomapfish:
+  redis:
     db: 0
 
-geoportal:
-  replicaCount: 2
+  geoportal:
+    replicaCount: 2
+    env:
+      PRINT_URL:
+        value: https://geoservices.camptocamp.com/print/$(PRINT_APP)/
+        order: 1
 
-mapserver:
-  replicaCount: 2
-  parallelism: 4
+  mapserver:
+    replicaCount: 2
 
-qgisserver:
-  replicaCount: 2
-  parallelism: 4
+  qgisserver:
+    replicaCount: 2
 
-tilecloudchain:
-  replicaCount: 2
+  tilecloudchain:
+    replicaCount: 2
+
+  mutualize:
+    tccService: mutualize-prod-tcc.gs-mutualize.svc.cluster.local

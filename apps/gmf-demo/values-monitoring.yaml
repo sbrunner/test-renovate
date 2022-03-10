@@ -1,0 +1,6 @@
+monitoring:
+  dbstats:
+    dbs:
+      - schema:
+          - main_2_7
+          - static_2_7

@@ -1,9 +1,9 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: az-console
 spec:
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       name: az-console

@@ -1,0 +1,52 @@
+geomapfish:
+  geoportal:
+    image: &geoportal-image
+      repository: camptocamp/geomapfishapp-geoportal
+      tag: 2.7
+      atleastOldDays: 20
+
+    alembic:
+      image: *geoportal-image
+
+    tools:
+      image:
+        repository: camptocamp/geomapfish-tools
+        tag: 2.7
+        atleastOldDays: 20
+
+    ingress:
+      additionalPaths:
+        tiles:
+          path: /tiles/
+          service: mutualize-prod-ttc
+
+  mapserver:
+    image:
+      repository: camptocamp/mapserver
+      tag: '7.6-20-04'
+      atleastOldDays: 20
+
+    apacheExporter: &apacheExporter
+      image:
+        repository: quay.io/lusitaniae/apache-exporter
+        tag: latest
+        atleastOldDays: 20
+
+  qgisserver:
+    image:
+      repository: camptocamp/geomapfish-qgisserver
+      #tag: gmf2.7-qgis3.22
+      tag: gmf2.7-qgismaster
+      atleastOldDays: 20
+
+    apacheExporter: *apacheExporter
+
+  configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
+
+fts-cron:
+  containers:
+    fts-cron:
+      image: &geoportal-image
+        repository: camptocamp/geomapfishapp-geoportal
+        tag: 2.7
+        atleastOldDays: 20

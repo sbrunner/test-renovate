@@ -1,0 +1,206 @@
+#!/usr/bin/env python3.8
+import argparse
+import datetime
+import json
+import logging
+import math
+import re
+import subprocess
+from typing import List
+
+import dateutil.parser
+
+LOG = logging.getLogger(__name__)
+
+
+_suffix_lookup = {
+    "p": 1024 ** -4,
+    "n": 1024 ** -3,
+    "u": 1024 ** -2,
+    "m": 1024 ** -1,
+    "": 1024 ** 0,
+    "K": 1024 ** 1,
+    "M": 1024 ** 2,
+    "G": 1024 ** 3,
+    "T": 1024 ** 4,
+}
+_suffix = {0: "", 1: "K", 2: "M", 3: "G", 4: "T"}
+
+
+def parse_eng(value, unit):
+    return (float(value)) * _suffix_lookup[unit]
+
+
+def format_eng(value):
+    power = math.floor(math.log(value, 1024))
+    return f"{value/1024**power:.2f}{_suffix[power]}"
+
+
+EVICTED_RE = re.compile(
+    f"^{re.escape('Container ')}(.+){re.escape(' was using ')}([0-9]+)([a-zA-Z]?)i{re.escape(', which exceeds its request of ')}([0-9]+)([a-zA-Z]?)i?$"
+)
+
+
+def get_formated_container_status(pod, duration=None):
+    containers_status = []
+    containers_status += pod["status"].get("initContainerStatuses", [])
+    containers_status += pod["status"].get("containerStatuses", [])
+    messages = []
+    for container_status in containers_status:
+        if not container_status["ready"]:
+            if "message" in container_status.get("lastState", {}).get("terminated", {}):
+                message = "\n".join(
+                    container_status["lastState"]["terminated"]["message"].strip().split("\n")[-5:]
+                )
+                messages.append(
+                    f'Container {container_status["name"]} not ready: '
+                    f'{container_status["lastState"]["terminated"].get("reason", "")} '
+                    f"{message}\n---"
+                )
+            elif "message" in container_status.get("state", {}).get("waiting", {}):
+                messages.append(
+                    f'Container {container_status["name"]} not ready: '
+                    f'{container_status["state"]["waiting"].get("reason", "")} '
+                    f'{container_status["state"]["waiting"]["message"]}'
+                )
+            elif "message" in container_status.get("state", {}).get("terminated", {}):
+
+                def parse_json(msg):
+                    if msg and msg[0] == "{":
+                        return json.loads(msg).get("msg", msg)
+                    return msg
+
+                message = "\n".join(
+                    [
+                        parse_json(msg)
+                        for msg in container_status["state"]["terminated"]["message"].strip().split("\n")[-5:]
+                    ]
+                )
+                messages.append(
+                    f'Container {container_status["name"]} not ready: '
+                    f'{container_status["state"]["terminated"].get("reason", "")}:\n'
+                    f"{message}\n---"
+                )
+            elif duration:
+                messages.append(
+                    f'Container {container_status["name"]} not ready: Restart count '
+                    f'{container_status["restartCount"]} for {duration}'
+                )
+            else:
+                messages.append(
+                    f'Container {container_status["name"]} not ready: Restart count '
+                    f'{container_status["restartCount"]}'
+                )
+    return messages
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Display the status of all pods that's not in a good state")
+    parser.add_argument("--rm-all", action="store_true", help="remove the pods")
+    parser.add_argument("--rm-evicted", action="store_true", help="remove the evicted pods")
+    parser.add_argument("--json", action="store_true", help="full pod json output")
+    parser.add_argument("--start", default="10", help="the considered time to start a pod in minutes")
+    parser.add_argument("project", nargs="?", help="do on only one project")
+    parser.add_argument("pod", nargs="?", help="do on only one pod")
+    args = parser.parse_args()
+
+    projects = (
+        [args.project]
+        if args.project
+        else [
+            project
+            for project in subprocess.check_output(["oc", "projects", "-q"]).decode().strip().split("\n")
+            if project.startswith("gs-")
+        ]
+    )
+    for project in projects:
+        subprocess.check_output(["oc", "project", project])
+        if not args.project:
+            print(project)
+        pods = json.loads(subprocess.check_output(["oc", "get", "pods", "--output=json"]))["items"]
+        for pod in pods:
+            if args.pod and pod["metadata"]["name"] != args.pod:
+                continue
+            del pod["spec"]
+            if args.pod and args.json:
+                print(json.dumps(pod))
+                continue
+            messages: List[str] = []
+            reason = "unknown"
+            if pod["status"]["phase"] not in ("Running", "Pending", "Succeeded"):
+                message = pod["status"].get("message", "")
+                reason = "wrong-phase"
+                message_split = message.split(".")
+                if message_split[0] == "The node was low on resource: memory":
+                    new_messages = []
+                    for msg in message_split[1:-1]:
+                        match = EVICTED_RE.match(msg.strip())
+                        if match is None:
+                            print(f"Error parsing message: {msg.strip()}")
+                            exit(1)
+
+                        current = parse_eng(match.group(2), match.group(3))
+                        request = parse_eng(match.group(4), match.group(5))
+
+                        new_messages.append(
+                            f"{match.group(1)}: {format_eng(current)} of {format_eng(request)} overpass {format_eng(current - request)}"
+                        )
+                    message = ". ".join(new_messages)
+                    reason = "evicted"
+
+                if not message:
+                    container_messages = get_formated_container_status(pod)
+                    if container_messages:
+                        messages += container_messages
+                        reason = "wrong-container-sttatus"
+                    else:
+                        messages.append(f'{pod["status"]["phase"]} - {pod["status"].get("reason")}')
+                        reason = "wrong-status"
+                else:
+                    messages.append(f'{pod["status"]["phase"]} - {pod["status"].get("reason")}: {message}')
+
+            duration = datetime.datetime.utcnow() - dateutil.parser.isoparse(
+                pod["metadata"]["creationTimestamp"]
+            ).replace(tzinfo=None)
+
+            if duration > datetime.timedelta(minutes=int(args.start)):
+                if pod["status"]["phase"] not in ("Succeeded", "Failed"):
+                    message = get_formated_container_status(pod, duration)
+                    reason = "wrong-container-sttatus"
+                    if message:
+                        messages += message
+
+                for condition in pod["status"].get("conditions", []):
+                    if (
+                        condition["status"] != "True"
+                        and condition["reason"] != "PodCompleted"
+                        and (not messages or condition["type"] not in ("ContainersReady", "Ready"))
+                    ):
+                        messages.append(
+                            f'Condition {condition["type"]} not reached: '
+                            f'{condition.get("reason", "")} '
+                            f'{condition.get("message", "")}'
+                        )
+                        reason = "wrong-sttatus"
+
+                if pod["status"]["phase"] in ("Pending") and not messages:
+                    messages.append(f'{pod["status"]["phase"]} for {duration}')
+                    reason = "wrong-phase"
+            if messages:
+                if args.json:
+                    print(json.dumps(pod))
+                elif args.rm_all or args.rm_evicted and reason == "evicted":
+                    try:
+                        subprocess.call(
+                            ["oc", "delete", "pod", "--wait=false", pod["metadata"]["name"]], timeout=30
+                        )
+                    except:
+                        LOG.exception("Unable to delete a pod")
+                    continue
+                else:
+                    for message in messages:
+                        print(f'{pod["metadata"]["name"]}: {message}')
+
+
+if __name__ == "__main__":
+    main()

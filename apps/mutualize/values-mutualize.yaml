@@ -1,0 +1,485 @@
+# Redis DB:
+# config: 1
+# print logs: 2
+# tilecloud-chain: 3
+# Redis DB int:
+# config: 4
+# print logs: 5
+# tilecloud-chain: 6
+
+sentry-env-base: &sentry-env-base
+  SENTRY_URL:
+    value: https://0454083c8df943d0a256825b83b36e5e@o330647.ingest.sentry.io/1853817
+python-env-base: &python-env-base
+  <<: *sentry-env-base
+  LOG_TYPE:
+    value: json
+  LOG_LEVEL:
+    value: INFO
+  C2CWSGIUTILS_LOG_LEVEL:
+    value: INFO
+  GUNICORN_LOG_LEVEL:
+    value: WARN
+  OTHER_LOG_LEVEL:
+    value: WARN
+  C2C_BROADCAST_PREFIX:
+    value: broadcast_config_$(REDIS_DB)_
+    order: 1
+  C2C_SECRET:
+    type: secret
+    name: secrets
+    key: C2C_SECRET
+  C2C_REDIS_TIMEOUT:
+    value: '10'
+  C2C_REDIS_SENTINELS:
+    value: redis:26379
+  C2C_REDIS_SERVICENAME:
+    value: mymaster
+  C2C_REDIS_DB:
+    value: $(REDIS_DB)
+    order: 1
+config-env-base: &config-env-base
+  <<: *python-env-base
+  SCM_ENV_PREFIXES:
+    value: MUTUALIZED_:DOLLAR:DISABLE_
+  DOLLAR:
+    value: $
+  DISABLE_MUTUALIZED_PRINT:
+    value: ''
+  DISABLE_LOCAL_PRINT:
+    value: '#'
+  DISABLE_MUTUALIZE:
+    value: ''
+  DISABLE_LOCAL:
+    value: '#'
+  API_BASE_URL:
+    value: http://$(CONFIG_SERVICE_NAME)/config/
+    order: 1
+  DEVELOPMENT:
+    value: '0'
+  CONFIG_SERVICE_NAME:
+    type: configMap
+    name: env
+    key: CONFIG_SERVICE_NAME
+  SHARED_CONFIG_MASTER:
+    value: /etc/shared_config_manager/config.yaml
+  SENTRY_CLIENT_RELEASE:
+    type: configMap
+    name: env
+    key: CONFIG_IMAGE_TAG
+  C2C_REQUESTS_DEFAULT_TIMEOUT:
+    value: '120'
+
+mutualize:
+  print:
+    terminationGracePeriodSeconds: 120
+    env:
+      LOG_LEVEL:
+        value: INFO
+      PRINT_YAML_MAX_ALIASES:
+        value: 200
+      DB_HOST:
+        type: secret
+        name: database
+        key: hostname
+      DB_DATABASE:
+        type: secret
+        name: database
+        key: database
+      DB_USERNAME:
+        type: secret
+        name: database
+        key: username
+      DB_PASSWORD:
+        type: secret
+        name: database
+        key: password
+      TOMCAT_LOG_TYPE:
+        value: json
+      PGOPTIONS:
+        value: -c statement_timeout=30000
+      PRINT_POLL_INTERVAL:
+        value: 1
+      EXTRA_JARS:
+        value: /usr/local/tomcat/webapps/ROOT/print-apps/mfp-extras/jars
+      CATALINA_OPTS:
+        value: >-
+          -Dmapfish.maxContentLength=$(PRINT_MAXCONTENT_LENGTH)
+          -DmaxNumberOfRunningPrintJobs=$(PRINT_MAXNUMBEROFRUNNINGPRINTJOBS)
+          -Dsentry.dsn=$(SENTRY_DSN)
+          -Dsentry.release=$(SENTRY_RELEASE)
+          -Dsentry.environment=$(SENTRY_ENVIRONMENT)
+          -Dsentry.tags=$(SENTRY_TAGS)
+          -Ddb.username=$(PGUSER)
+          -Ddb.password=$(PGPASSWORD)
+          -Ddb.host=$(PGHOST)
+          -Ddb.name=$(PGDATABASE)
+          -Ddb.schema=$(PGSCHEMA)
+          -DcacheDuration=$(CATALINA_CACHEDURATION)
+          -Dsun.net.inetaddr.ttl=$(JAVA_INETADDR_TTL)
+          -Xmx$(JAVA_XMX)
+          -Xms$(JAVA_XMS)
+          -XX:GCTimeLimit=$(JAVA_GCTIMELIMIT)
+          -XX:GCHeapFreeLimit=$(JAVA_GCHEAPFREELIMIT)
+          -XX:+ExitOnOutOfMemoryError
+        order: 1
+      PRINT_MAXCONTENT_LENGTH:
+        value: '6291456'
+      PRINT_MAXNUMBEROFRUNNINGPRINTJOBS:
+        value: '2'
+      SENTRY_DSN:
+        value: https://0454083c8df943d0a256825b83b36e5e:dd63b83297d0422bb294bc5effa4c3f8@o330647.ingest.sentry.io/1853817
+      SENTRY_TAGS:
+        value: service:print
+      PGHOST:
+        type: secret
+        name: database
+        key: hostname
+      PGPORT:
+        type: secret
+        name: database
+        key: port
+      PGDATABASE:
+        type: secret
+        name: database
+        key: database
+      PGUSER:
+        type: secret
+        name: database
+        key: username
+      PGPASSWORD:
+        type: secret
+        name: database
+        key: password
+      PGSCHEMA:
+        value: public
+      CATALINA_CACHEDURATION:
+        value: '60'
+      JAVA_INETADDR_TTL:
+        value: '30'
+      JAVA_XMX:
+        value: '3072M'
+      JAVA_XMS:
+        value: '3072M'
+      JAVA_GCTIMELIMIT:
+        value: '70'
+      JAVA_GCHEAPFREELIMIT:
+        value: '10'
+
+    podAnnotations:
+      co.elastic.logs/enabled: 'true'
+
+    config:
+      env:
+        <<: *config-env-base
+        TAG_FILTER:
+          value: print
+
+    webXml: |
+      <?xml version="1.0" encoding="UTF-8"?>
+
+      <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              version="3.0"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+              metadata-complete="true">
+
+          <absolute-ordering/>
+
+          <context-param>
+              <param-name>contextConfigLocation</param-name>
+              <param-value>
+                  classpath*:mapfish-spring-application-context.xml,classpath:mapfish-spring-security.xml,/WEB-INF/mapfish-print-printer-factory.xml,classpath*:mapfish-spring-application-context-override.xml
+              </param-value>
+          </context-param>
+
+          <listener>
+              <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+          </listener>
+
+          <listener>
+              <listener-class>org.mapfish.print.metrics.MetricsRegistryContextListener</listener-class>
+          </listener>
+
+          <listener>
+              <listener-class>org.mapfish.print.metrics.HealthCheckRegistryContextListener</listener-class>
+          </listener>
+
+          <listener>
+              <listener-class>org.mapfish.print.metrics.MapfishPrintInstrumentedFilterContextListener
+              </listener-class>
+          </listener>
+
+          <filter>
+              <filter-name>requestSizeFilter</filter-name>
+              <filter-class>org.mapfish.print.servlet.RequestSizeFilter</filter-class>
+              <init-param>
+                  <!-- The maximum request size in bytes (default: 1 MB). -->
+                  <param-name>maxContentLength</param-name>
+                  <param-value>1048576</param-value>
+              </init-param>
+          </filter>
+          <filter-mapping>
+              <filter-name>requestSizeFilter</filter-name>
+              <url-pattern>/print/*</url-pattern>
+          </filter-mapping>
+
+          <filter>
+              <filter-name>characterEncodingFilter</filter-name>
+              <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+              <init-param>
+                  <param-name>encoding</param-name>
+                  <param-value>UTF-8</param-value>
+              </init-param>
+          </filter>
+          <filter-mapping>
+              <filter-name>characterEncodingFilter</filter-name>
+              <url-pattern>/print/*</url-pattern>
+          </filter-mapping>
+
+          <filter>
+              <filter-name>springSecurityFilterChain</filter-name>
+              <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+          </filter>
+
+          <filter-mapping>
+              <filter-name>springSecurityFilterChain</filter-name>
+              <url-pattern>/print/*</url-pattern>
+          </filter-mapping>
+
+          <filter>
+              <filter-name>instrumentedFilter</filter-name>
+              <filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
+          </filter>
+          <filter-mapping>
+              <filter-name>instrumentedFilter</filter-name>
+              <url-pattern>/print/*</url-pattern>
+          </filter-mapping>
+
+          <filter>
+              <filter-name>CORS</filter-name>
+              <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+              <init-param>
+                  <param-name>cors.supportedMethods</param-name>
+                  <param-value>GET, POST, DELETE, HEAD, OPTIONS</param-value>
+              </init-param>
+              <init-param>
+                  <param-name>cors.maxAge</param-name>
+                  <param-value>86400</param-value>
+              </init-param>
+              <init-param>
+                  <param-name>cors.supportsCredentials</param-name>
+                  <param-value>false</param-value>
+              </init-param>
+          </filter>
+          <filter-mapping>
+              <filter-name>CORS</filter-name>
+              <url-pattern>/print/*</url-pattern>
+          </filter-mapping>
+
+          <servlet>
+              <servlet-name>metrics-servlet</servlet-name>
+              <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+          </servlet>
+
+          <!-- single mapping to spring, this only works properly if the advanced dispatch filter is
+              active -->
+          <servlet-mapping>
+              <servlet-name>metrics-servlet</servlet-name>
+              <url-pattern>/print/metrics</url-pattern>
+          </servlet-mapping>
+          <servlet-mapping>
+              <servlet-name>metrics-servlet</servlet-name>
+              <url-pattern>/print/metrics/*</url-pattern>
+          </servlet-mapping>
+
+          <servlet>
+              <servlet-name>mapfish-print</servlet-name>
+              <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+              <load-on-startup>1</load-on-startup>
+          </servlet>
+
+          <servlet-mapping>
+              <servlet-name>mapfish-print</servlet-name>
+              <url-pattern>/print/*</url-pattern>
+          </servlet-mapping>
+      </web-app>
+
+  config:
+    env:
+      <<: *config-env-base
+      SENTRY_TAG_SERVICE:
+        value: config-master
+      API_MASTER:
+        value: '1'
+      ROUTE_PREFIX:
+        type: configMap
+        name: env
+        key: CONFIG_PATH
+
+    path: /config/
+
+    podAnnotations:
+      co.elastic.logs/enabled: 'true'
+
+  logs:
+    elasticsearch:
+      url: https://elasticsearch.logs.camptocamp.com/
+      indexes: openshift-ch-1-gs-mutualized-print-*
+
+    env:
+      <<: *python-env-base
+      SENTRY_TAG_SERVICE:
+        value: logs
+      SENTRY_CLIENT_RELEASE:
+        type: configMap
+        name: env
+        key: PRINT_LOGS_IMAGE_TAG
+      ES_INDEXES:
+        value: openshift-ch-1-gs-mutualized-print-*
+      SOURCES_KEY:
+        type: secret
+        name: secrets
+        key: C2C_SECRET
+      SQLALCHEMY_URL:
+        type: secret
+        name: database
+        key: sqlalchemyUrl
+      SQLALCHEMY_SLAVE_URL:
+        type: secret
+        name: database
+        key: sqlalchemyUrl
+        #key: sqlalchemySlaveUrl
+      SHARED_CONFIG_MASTER:
+        value: /master_config/config.yaml
+      VISIBLE_ENTRY_POINT:
+        value: /print/
+      C2C_BASE_PATH:
+        value: /logs/c2c
+    readinessProbe:
+      httpGet:
+        path: /print/logs/c2c/health_check
+    livenessProbe:
+      httpGet:
+        path: /print/logs/c2c/health_check?max_level=0
+
+    config:
+      env:
+        <<: *config-env-base
+        SENTRY_TAG_SERVICE:
+          value: config-logs
+
+    podAnnotations:
+      co.elastic.logs/enabled: 'true'
+
+  tilecloudchain: &tilecloudchain
+    enabled: true
+    podAnnotations:
+      co.elastic.logs/enabled: 'true'
+    podLabels:
+      aadpodidbinding: gmf
+
+    env: &tilecloudchain-env
+      <<: *python-env-base
+      SENTRY_TAG_SERVICE:
+        value: tilecloudchain
+      SENTRY_CLIENT_RELEASE:
+        type: configMap
+        name: env
+        key: TILECLOUDCHAIN_IMAGE_TAG
+      TILEGENERATION_MAIN_CONFIGFILE:
+        value: /etc/tilecloudchain-main/config.yaml
+      TILEGENERATION_CONFIGFILE:
+        value: ''
+      TILEGENERATION_HOSTSFILE:
+        value: /etc/tilecloudchain-hosts/hosts.yaml
+      VISIBLE_ENTRY_POINT:
+        value: /
+      C2C_BASE_PATH:
+        value: /tiles/c2c
+      AZURE_STORAGE_ACCOUNT_NAME:
+        type: secret
+        name: gmf-blob-storage
+        key: storageAccountName
+      AZURE_STORAGE_ACCOUNT_URL:
+        value: https://$(AZURE_STORAGE_ACCOUNT_NAME).blob.core.windows.net/
+        order: 1
+
+    probes:
+      httpGet:
+        httpHeaders:
+          - name: Host
+            value: geomapfish-demo-2-7.camptocamp.com
+
+    mainConfig:
+      redis:
+        socket_timeout: 10
+        sentinels:
+          - - redis
+            - 26379
+        service_name: mymaster
+      server:
+        wmts_path: tiles
+        static_path: tiles/static
+        admin_path: tiles/admin
+        expires: 8 # 8 hours
+
+    config:
+      env: &tilecloudchain-config-env
+        <<: *config-env-base
+        TAG_FILTER:
+          value: tilecloudchain
+        SENTRY_TAG_SERVICE:
+          value: config-tilecloudchain
+
+  tilecloudchainSlave:
+    <<: *tilecloudchain
+    env:
+      <<: *tilecloudchain-env
+      SENTRY_TAG_SERVICE:
+        value: tilecloudchain-slave
+    config:
+      env:
+        <<: *tilecloudchain-config-env
+        SENTRY_TAG_SERVICE:
+          value: config-tilecloudchain-slave
+
+  additionalConfigs:
+    examples:
+      repository: mapfish/mapfish-print
+      dir: examples/src/test/resources/examples
+      branch: master
+      key: c2crulez
+      labels:
+        mutualize-sharedconfig: 'true'
+      tags:
+        - print
+    mfp-extras:
+      repository: camptocamp/argocd-gs-platform-ch-development-apps
+      dir: apps/mutualize/mfp-extras
+      branch: master
+      key: c2crulez
+      labels:
+        mutualize-sharedconfig: 'true'
+      tags:
+        - print
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
+
+  image:
+    pullPolicy: Always
+
+  ingress:
+    enabled: true
+    annotations:
+      acme.cert-manager.io/http01-edit-in-place: 'true'
+      cert-manager.io/cluster-issuer: letsencrypt-dnsonly
+      ingress.kubernetes.io/ssl-redirect: 'true'
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+    paths:
+      - /
+
+  revisionHistoryLimit: 1

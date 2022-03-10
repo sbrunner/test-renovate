@@ -1,0 +1,18 @@
+monitoring:
+  kubernetes:
+    charts:
+      - monitoring
+      - prometheus
+  statsd:
+    enabled: false
+  cache:
+    enabled: false
+  c2cwsgiutils:
+    enabled: false
+  postgresql:
+    enabled: true
+
+  dbstats:
+    dbs:
+      - schema:
+          - public

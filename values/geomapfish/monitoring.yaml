@@ -1,0 +1,9 @@
+monitoring:
+  apache:
+    enabled: true
+
+  kubernetes:
+    ignoredPods:
+      - dbstats
+      - cron
+      - cronjob

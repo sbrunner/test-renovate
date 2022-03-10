@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""
+Parse and display json logs as output by c2cwsgiutils applications. Just pipe the logs to this script. For example:
+    oc logs -f prod-2-5-c2cgeoportal-geoportal-5cf5859df8-gxfb2 | ./parse_logs
+"""
+import datetime
+import json
+import re
+import sys
+
+COLORS = {"DEBUG": 30, "INFO": 32, "WARNING": 31, "WARN": 31, "ERROR": "41;37"}
+TIMESTAMP_RE = re.compile(r"\d+/\d+/\d+ \d+:\d+:\d+ [AP]M *(\{.*)")
+
+
+def colorize(color: int, txt: str) -> str:
+    return f"\033[{color}m{txt}\033[0m"
+
+
+def color_level(level: str) -> str:
+    return colorize(COLORS[level], level[0])
+
+
+def print_line(line: str) -> None:
+    line = line.split("\r")[-1]
+    if line.startswith("{"):
+        try:
+            match = TIMESTAMP_RE.match(line)
+            if match:
+                line = match.group(1)
+            parsed = json.loads(line)
+            if (
+                "timestamp" in parsed
+                and "level_name" in parsed
+                and "source_facility" in parsed
+                and "msg" in parsed
+            ):
+                cur_time = datetime.datetime.fromtimestamp(parsed["timestamp"]).strftime("%H:%M:%S.%f")
+                print(
+                    f"{cur_time} {color_level(parsed['level_name'])} {colorize(35, parsed['source_facility'])} {parsed['msg']}"
+                )
+                if "full_message" in parsed:
+                    print(parsed["full_message"])
+            elif (
+                "timegenerated" in parsed
+                and "level_name" in parsed
+                and "logger_name" in parsed
+                and "msg" in parsed
+            ):
+                cur_time = datetime.datetime.strptime(
+                    parsed["timegenerated"].split(".")[0], "%Y-%m-%dT%H:%M:%S"
+                ).strftime("%H:%M:%S.%f")
+                print(
+                    f"{cur_time} {color_level(parsed['level_name'])} {colorize(35, parsed['logger_name'])} {parsed['msg']}"
+                )
+                if "full_message" in parsed:
+                    print(parsed["full_message"])
+            else:
+                print(line)
+                print(parsed.keys())
+        except json.decoder.JSONDecodeError:
+            print(line.rstrip("\n"))
+    else:
+        print(line.rstrip("\n"))
+
+
+def main() -> None:
+    try:
+        for line in sys.stdin:
+            print_line(line)
+
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == "__main__":
+    main()

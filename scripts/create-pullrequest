@@ -3,5 +3,5 @@
 git checkout -b update-images-hash
 git add --all
 git commit --message="Update the images hash"
-git push
+git push origin update-images-hash
 gh pr create --fill

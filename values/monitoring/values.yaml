@@ -6,6 +6,7 @@ monitoring:
     image:
       repository: camptocamp/es-ooms-exporter
       tag: master
+      sha: 09ce2d09331a71c72d768297465455b5a326f25387c54885599ba6706227bc52
 
     annotations:
       reloader.stakater.com/auto: 'true'
@@ -40,6 +41,7 @@ monitoring:
     image:
       repository: prom/statsd-exporter
       tag: latest
+      sha: 8be6604709613409be493520d13a58686ce0b9d69f9b23476195a37379d2df9e
 
     annotations:
       reloader.stakater.com/auto: 'true'
@@ -57,13 +59,14 @@ monitoring:
     image:
       repository: camptocamp/c2cwsgiutils
       tag: '5'
-
       resources:
         requests:
           cpu: 30m
           memory: 41.1Mi
         limits:
           memory: 50Mi
+
+      sha: 1bf0b6483911a39a727baf9ed6e58a28f4ecab34e620af2729fdcc0f9869f968
 
     prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
 

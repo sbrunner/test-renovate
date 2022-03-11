@@ -13,7 +13,7 @@ config-env-base: &config-env-base
     value: '1'
 
 mutualize:
-  configMapNameOverride: &configMapNameOverride
+  configMapNameOverride:
     env: mutualize-prod-env
 
   config:
@@ -27,7 +27,7 @@ mutualize:
       <<: *config-env-base
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod'
+      reloader.stakater.com/auto: mutualize-prod-env,mutualize-prod
 
     resources:
       requests:
@@ -52,7 +52,7 @@ mutualize:
         value: prod
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,mutualize-prod-print,database,gmf-blob-storage'
+      reloader.stakater.com/auto: mutualize-prod-env,mutualize-prod,mutualize-prod-print,database,gmf-blob-storage
 
     resources:
       requests:
@@ -86,7 +86,7 @@ mutualize:
         value: '2'
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,database'
+      reloader.stakater.com/auto: mutualize-prod-env,mutualize-prod,database
 
     resources:
       requests:
@@ -110,7 +110,7 @@ mutualize:
         value: '3'
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-prod-env,mutualize-prod,mutualize-prod-tcc-main-config,gmf-blob-storage'
+      reloader.stakater.com/auto: mutualize-prod-env,mutualize-prod,mutualize-prod-tcc-main-config,gmf-blob-storage
 
     config: *config
 

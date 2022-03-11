@@ -13,7 +13,7 @@ config-env-base: &config-env-base
     value: '4'
 
 mutualize:
-  configMapNameOverride: &configMapNameOverride
+  configMapNameOverride:
     env: mutualize-int-env
 
   config:
@@ -21,12 +21,13 @@ mutualize:
     image: &config-image
       repository: camptocamp/shared_config_manager
       tag: latest
+      sha: f5f5dec64179e3611a3d2b19d5c79f898f2f9d849bbbf78cd1c1046ed60a33c1
 
     env:
       <<: *config-env-base
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-int-env,mutualize-int'
+      reloader.stakater.com/auto: mutualize-int-env,mutualize-int
 
     resources:
       requests:
@@ -41,6 +42,8 @@ mutualize:
       repository: camptocamp/mapfish_print
       tag: &print-tag latest
 
+      sha: 106c043548887586a73f658a68cf58ea88a630a241021bfe4390fa496c3f0e37
+
     env:
       SENTRY_RELEASE:
         value: *print-tag
@@ -52,7 +55,7 @@ mutualize:
         value: int
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-int-env,mutualize-int,mutualize-int-print,database,gmf-blob-storage'
+      reloader.stakater.com/auto: mutualize-int-env,mutualize-int,mutualize-int-print,database,gmf-blob-storage
 
     resources:
       requests:
@@ -79,13 +82,14 @@ mutualize:
     image:
       repository: camptocamp/mapfish-print-logs
       tag: latest
+      sha: dc1e11d8b21fdca5c23ed73960c17413d77f718569d5084bf9043bd2d71ea5cd
 
     env:
       REDIS_DB:
         value: '5'
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-int-env,mutualize-int,database'
+      reloader.stakater.com/auto: mutualize-int-env,mutualize-int,database
 
     resources:
       requests:
@@ -98,13 +102,14 @@ mutualize:
     image:
       repository: camptocamp/tilecloud-chain
       tag: latest
+      sha: 384024aa4ad83195157a51ce669a212893534b408ba86fcb3e392894390728dc
 
     env:
       REDIS_DB:
         value: '6'
 
     annotations:
-      reloader.stakater.com/auto: 'mutualize-int-env,mutualize-int,mutualize-int-tcc-main-config,gmf-blob-storage'
+      reloader.stakater.com/auto: mutualize-int-env,mutualize-int,mutualize-int-tcc-main-config,gmf-blob-storage
 
     config: *config
 

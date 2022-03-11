@@ -1,7 +1,38 @@
+shared:
+  osm-db-connexion: &osm-db-connexion
+    OSM_PGHOST:
+      type: secret
+      name: database-osm
+      key: hostname
+    OSM_PGHOST_SLAVE:
+      type: secret
+      name: database-osm
+      key: hostnameSlave
+    OSM_PGPORT:
+      type: secret
+      name: database-osm
+      key: port
+    OSM_PGPORT_SLAVE:
+      type: secret
+      name: database-osm
+      key: portSlave
+    OSM_PGDATABASE:
+      type: secret
+      name: database-osm
+      key: database
+    OSM_PGUSER:
+      type: secret
+      name: database-osm
+      key: username
+    OSM_PGPASSWORD:
+      type: secret
+      name: database-osm
+      key: password
+
 geomapfish:
   geoportal:
     ingress:
-      hosts: &hosts
+      hosts:
         - name: main
           host: geomapfish-demo-2-7.camptocamp.com
           tls:
@@ -28,6 +59,7 @@ geomapfish:
           service: geomapfish-prod-2-7-tiles
 
     env:
+      <<: *osm-db-connexion
       AZURE_CONTAINER_NAME:
         value: balanced-woodcock
       PRINT_APP:
@@ -64,35 +96,7 @@ geomapfish:
     config:
       <<: *config
       # Specific to demo
-      env:
-        OSM_PGHOST:
-          type: secret
-          name: database-osm
-          key: hostname
-        OSM_PGHOST_SLAVE:
-          type: secret
-          name: database-osm
-          key: hostnameSlave
-        OSM_PGPORT:
-          type: secret
-          name: database-osm
-          key: port
-        OSM_PGPORT_SLAVE:
-          type: secret
-          name: database-osm
-          key: portSlave
-        OSM_PGDATABASE:
-          type: secret
-          name: database-osm
-          key: database
-        OSM_PGUSER:
-          type: secret
-          name: database-osm
-          key: username
-        OSM_PGPASSWORD:
-          type: secret
-          name: database-osm
-          key: password
+      env: *osm-db-connexion
 
   qgisserver:
     env:

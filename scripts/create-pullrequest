@@ -4,4 +4,5 @@ git checkout -b update-images-hash
 git add --all
 git commit --message="Update the images hash"
 git push origin update-images-hash --force
+gopass show gs/ci/github/token/gopass | gh auth login --with-token
 gh pr create --fill

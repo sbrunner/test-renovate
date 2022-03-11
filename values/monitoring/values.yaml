@@ -6,6 +6,7 @@ monitoring:
     image:
       repository: camptocamp/es-ooms-exporter
       tag: master
+      sha: 09ce2d09331a71c72d768297465455b5a326f25387c54885599ba6706227bc52
 
     annotations:
       reloader.stakater.com/auto: 'true'
@@ -40,6 +41,7 @@ monitoring:
     image:
       repository: prom/statsd-exporter
       tag: latest
+      sha: 8be6604709613409be493520d13a58686ce0b9d69f9b23476195a37379d2df9e
 
     annotations:
       reloader.stakater.com/auto: 'true'
@@ -57,13 +59,14 @@ monitoring:
     image:
       repository: camptocamp/c2cwsgiutils
       tag: '5'
+      sha: 1bf0b6483911a39a727baf9ed6e58a28f4ecab34e620af2729fdcc0f9869f968
 
-      resources:
-        requests:
-          cpu: 30m
-          memory: 41.1Mi
-        limits:
-          memory: 50Mi
+    resources:
+      requests:
+        cpu: 30m
+        memory: 41.1Mi
+      limits:
+        memory: 50Mi
 
     prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
 
@@ -83,103 +86,84 @@ monitoring:
         value: '10'
       C2CWSGIUTILS_STATS_DB_SLEEP:
         value: '30'
-
-      env:
-        PGSCHEMA:
-          type: configMap
-          name: env
-          key: PGSCHEMA
-        PGSCHEMA_STATIC:
-          type: configMap
-          name: env
-          key: PGSCHEMA_STATIC
-        PGOPTIONS:
-          type: configMap
-          name: env
-          key: PGOPTIONS
-        PGSSLMODE:
-          value: require
-        PGHOST:
-          type: secret
-          name: database
-          key: hostname
-        PGHOST_SLAVE:
-          type: secret
-          name: database
-          key: hostnameSlave
-        PGPORT:
-          type: secret
-          name: database
-          key: port
-        PGPORT_SLAVE:
-          type: secret
-          name: database
-          key: portSlave
-        PGDATABASE:
-          type: secret
-          name: database
-          key: database
-        PGUSER:
-          type: secret
-          name: database
-          key: username
-        PGPASSWORD:
-          type: secret
-          name: database
-          key: password
-        GUNICORN_PARAMS:
-          value: --worker-tmp-dir=/dev/shm
-        C2C_LOG_VIEW_ENABLED:
-          value: 1
-        C2C_DEBUG_VIEW_ENABLED:
-          value: 1
-        C2C_SQL_PROFILER_ENABLED:
-          value: 1
-        LOG_TYPE:
-          value: json
-        C2C_REQUESTS_DEFAULT_TIMEOUT:
-          value: 30
-        SENTRY_URL:
-          type: configMap
-          name: geomapfish-env
-          key: SENTRY_URL
-        SENTRY_CLIENT_ENVIRONMENT:
-          type: configMap
-          name: geomapfish-env
-          key: RELEASE_NAME
-        SENTRY_CLIENT_RELEASE:
-          type: configMap
-          name: geomapfish-env
-          key: DBSTATS_CLIENT_RELEASE
-        SENTRY_TAG_SERVICE:
-          value: dbstats
-        STATSD_USE_TAGS:
-          value: '1'
-        STATSD_TAG_CHART:
-          type: configMap
-          name: monitoring-env
-          key: CHART_NAME
-        STATSD_TAG_RELEASE:
-          type: configMap
-          name: monitoring-env
-          key: RELEASE_NAME
-        STATSD_TAG_NAMESPACE:
-          type: configMap
-          name: monitoring-env
-          key: RELEASE_NAMESPACE
-        C2CWSGIUTILS_STATS_DB_TRYNUMBER:
-          value: '10'
-        C2CWSGIUTILS_STATS_DB_SLEEP:
-          value: '30'
-        LOG_LEVEL:
-          value: INFO
-
-      resources:
-        limits:
-          memory: 200Mi
-        requests:
-          memory: 100Mi
-          cpu: 1m
+      PGSCHEMA:
+        type: configMap
+        name: env
+        key: PGSCHEMA
+      PGSCHEMA_STATIC:
+        type: configMap
+        name: env
+        key: PGSCHEMA_STATIC
+      PGOPTIONS:
+        type: configMap
+        name: env
+        key: PGOPTIONS
+      PGSSLMODE:
+        value: require
+      PGHOST:
+        type: secret
+        name: database
+        key: hostname
+      PGHOST_SLAVE:
+        type: secret
+        name: database
+        key: hostnameSlave
+      PGPORT:
+        type: secret
+        name: database
+        key: port
+      PGPORT_SLAVE:
+        type: secret
+        name: database
+        key: portSlave
+      PGDATABASE:
+        type: secret
+        name: database
+        key: database
+      PGUSER:
+        type: secret
+        name: database
+        key: username
+      PGPASSWORD:
+        type: secret
+        name: database
+        key: password
+      GUNICORN_PARAMS:
+        value: --worker-tmp-dir=/dev/shm
+      C2C_LOG_VIEW_ENABLED:
+        value: '1'
+      C2C_DEBUG_VIEW_ENABLED:
+        value: '1'
+      C2C_SQL_PROFILER_ENABLED:
+        value: '1'
+      SENTRY_URL:
+        type: configMap
+        name: geomapfish-env
+        key: SENTRY_URL
+      SENTRY_CLIENT_ENVIRONMENT:
+        type: configMap
+        name: geomapfish-env
+        key: RELEASE_NAME
+      SENTRY_CLIENT_RELEASE:
+        type: configMap
+        name: geomapfish-env
+        key: DBSTATS_CLIENT_RELEASE
+      SENTRY_TAG_SERVICE:
+        value: dbstats
+      STATSD_USE_TAGS:
+        value: '1'
+      STATSD_TAG_CHART:
+        type: configMap
+        name: monitoring-env
+        key: CHART_NAME
+      STATSD_TAG_RELEASE:
+        type: configMap
+        name: monitoring-env
+        key: RELEASE_NAME
+      STATSD_TAG_NAMESPACE:
+        type: configMap
+        name: monitoring-env
+        key: RELEASE_NAMESPACE
 
   securityContext:
     runAsNonRoot: true

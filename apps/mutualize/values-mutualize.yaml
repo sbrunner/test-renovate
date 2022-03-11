@@ -158,9 +158,9 @@ mutualize:
       JAVA_INETADDR_TTL:
         value: '30'
       JAVA_XMX:
-        value: '3072M'
+        value: 3072M
       JAVA_XMS:
-        value: '3072M'
+        value: 3072M
       JAVA_GCTIMELIMIT:
         value: '70'
       JAVA_GCHEAPFREELIMIT:

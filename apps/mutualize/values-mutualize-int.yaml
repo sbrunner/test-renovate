@@ -21,7 +21,7 @@ mutualize:
     image: &config-image
       repository: camptocamp/shared_config_manager
       tag: latest
-      sha: 1989a8d08c346cd5a10005d813dc868ed5e0586f57f779af56002a013081973e
+      sha: fdbe5eb3ad9a27ee2fc3d67a5ea7321aa607a6a79e2e10ac2710e51237316533
 
     env:
       <<: *config-env-base
@@ -41,7 +41,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish_print
       tag: &print-tag latest
-      sha: a6afa8035b08c57960e61c5b696af0d9d3b20d2e958a5bff865453da1d2e3c27
+      sha: d3b1711f68e77543b8b484fcca74f8192fb8d0e10d23275b728632d19c5c1a1d
 
     env:
       SENTRY_RELEASE:
@@ -81,7 +81,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish-print-logs
       tag: latest
-      sha: fc4582aa98449782e9277ce21bf9deb4bdda6bf3e1270705e8a4c4641c9f533b
+      sha: a4624c8302de7d921083e3201a9e263b1df408ad2a62cda697025766261dde3c
 
     env:
       REDIS_DB:
@@ -101,7 +101,7 @@ mutualize:
     image:
       repository: camptocamp/tilecloud-chain
       tag: latest
-      sha: 1f43dbae2ab37c99ace8018fcfecdc186a04ecc3a85f8dce55ae50ca277fd940
+      sha: c0aeb6a3ac09e62218c1e3078f4fbc2551e98e9ac9223ea7bd1276fe1aeb22da
 
     env:
       REDIS_DB:

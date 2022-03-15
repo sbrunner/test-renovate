@@ -2,22 +2,24 @@ name: Update image hash - Cron
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 0 * * *'
 
 env:
   HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
 
 jobs:
-  audit:
+  images-sha:
     runs-on: ubuntu-20.04
     name: Update image hash - Cron
     timeout-minutes: 10
+    concurrency: images-sha
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: master
+          token: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
 
       - uses: camptocamp/initialise-gopass-summon-action@v2
         with:

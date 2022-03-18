@@ -61,13 +61,22 @@ def main() -> None:
     yaml = YAML()
     yaml.default_flow_style = False
 
+    used_images = set()
+    for filename in glob.glob("**/*.yaml", recursive=True):
+        if filename == "secrets.yaml" or filename.startswith("secrets-"):
+            continue
+        print(f"Open file: {filename}")
+        with open(filename, "r", encoding="utf-8") as f:
+            find_images(yaml.load(f), used_images)
+
+    if images:
+        images = images.intersection(used_images)
+    else:
+        images = used_images
+
     if not images:
-        for filename in glob.glob("**/*.yaml", recursive=True):
-            if filename == "secrets.yaml" or filename.startswith("secrets-"):
-                continue
-            print(f"Open file: {filename}")
-            with open(filename, "r", encoding="utf-8") as f:
-                find_images(yaml.load(f), images)
+        print("Nothing to update.")
+        return
 
     with open("data/images.yaml", "r", encoding="utf-8") as f:
         images_data = yaml.load(f)

@@ -1,4 +1,4 @@
 apps/*/Chart.lock
 apps/*/charts/
-apps/*/*/Chart.lock
-apps/*/*/charts/
+gsapps/*/*/Chart.lock
+gsapps/*/*/charts/

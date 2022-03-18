@@ -36,4 +36,4 @@ jobs:
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
       - run: scripts/update-image-hash ${{ github.event.client_payload.name }}
       - run: c2cciutils-checks --fix --check=prettier
-      - run: scripts/create-pullrequest
+      - run: scripts/create-pullrequest "- ${{ github.event.client_payload.name }}"

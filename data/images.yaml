@@ -148,3 +148,7 @@ camptocamp/c2cciutils:backport_489-to-1.1:
   791977e66b6b31c1b9f676f5bba1a615704fd79f03b13f13fcb3801f45fdc59c: '2022-03-17T10:00:56.079510'
 camptocamp/github-webhook-operator:renovate_pytest-7.x:
   242038f11971776f4a45e7378b84b1151ea67eb3b91d3afb075c3cb05a0a6ff4: '2022-03-18T13:18:11.003810'
+camptocamp/geomapfishdemo-custom:prod-2-8:
+  cb10fe9d7f757ccda2415383fb338aa1231f35f5b5ac84f01656189d64dfde1e: '2022-03-18T13:32:30.143719'
+camptocamp/geomapfishdemo-config:prod-2-8:
+  27969a6962a3c86a9fedcbdc66771889b04f2b131220cf62c431bb370cb1e8bf: '2022-03-18T13:32:33.339967'

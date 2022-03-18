@@ -130,3 +130,5 @@ camptocamp/tilecloud-chain:1.17:
   af3eaad6ad7b97f136d1a86ee854cfe7f76b8388907ff217200a68d1ca9e5960: '2022-03-15T09:09:22.072413'
 camptocamp/c2cciutils:docker-always-notif:
   b0d02ca6bade08467fbfdb6fe0093afd5deccfdfdd6f1b7bc508338cbd873081: '2022-03-15T12:27:45.456292'
+camptocamp/c2cciutils:backport_489-to-1.1:
+  791977e66b6b31c1b9f676f5bba1a615704fd79f03b13f13fcb3801f45fdc59c: '2022-03-17T10:00:56.079510'

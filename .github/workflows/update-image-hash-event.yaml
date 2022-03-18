@@ -33,7 +33,12 @@ jobs:
           patterns: docker
         if: env.HAS_SECRETS == 'HAS_SECRETS'
 
+      - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
+
+      - name: Checks
+        run: c2cciutils-checks
+
       - run: scripts/update-image-hash ${{ github.event.client_payload.name }}
       - run: c2cciutils-checks --fix --check=prettier
       - run: scripts/create-pullrequest "- ${{ github.event.client_payload.name }}"

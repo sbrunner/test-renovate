@@ -186,15 +186,7 @@ geomapfish:
       periodSeconds: 180
 
   ingress:
-    enabled: true
-    annotations:
-      acme.cert-manager.io/http01-edit-in-place: 'true'
-      cert-manager.io/cluster-issuer: letsencrypt-dnsonly
-      ingress.kubernetes.io/ssl-redirect: 'true'
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: 'true'
-    paths:
-      - /
+    enabled: false
 
   resources:
     limits:
@@ -467,6 +459,21 @@ qgisserver:
   config: *config
 
   apacheExporter: *apacheExporter
+
+ingress:
+  annotations:
+    acme.cert-manager.io/http01-edit-in-place: 'true'
+    cert-manager.io/cluster-issuer: letsencrypt-dnsonly
+    ingress.kubernetes.io/ssl-redirect: 'true'
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+  paths:
+    geoportal:
+      path: /
+      serviceName: geoportal
+    tiles:
+      path: /tiles/
+      serviceName: tiles
 
 fts-cron:
   schedule: 35 * * * *

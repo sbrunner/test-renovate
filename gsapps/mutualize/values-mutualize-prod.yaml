@@ -132,21 +132,15 @@ mutualize:
       limits:
         memory: 240Mi
 
-  ingress:
-    hosts:
-      - name: main
-        host: geoservices.camptocamp.com
-        tls:
-          secretName: main-print-prod-tls
-      - name: test
-        host: mutualize.apps.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: test-print-prod-tls
-      - name: blue
-        host: mutualize.apps.blue.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: blue-print-prod-tls
-      - name: green
-        host: mutualize.apps.green.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: green-print-prod-tls
+ingress:
+  hostsGroup:
+    - name: main
+      hosts:
+        - geoservices.camptocamp.com
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+    - name: test
+      hosts:
+        - mutualize.apps.gs-ch-dev.camptocamp.com
+        - mutualize.apps.blue.gs-ch-dev.camptocamp.com
+        - mutualize.apps.green.gs-ch-dev.camptocamp.com

@@ -13,12 +13,6 @@ geomapfish:
       tag: 2.7
       atleastOldDays: 20
 
-  ingress:
-    additionalPaths:
-      tiles:
-        path: /tiles/
-        service: mutualize-prod-ttc
-
   configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
 
 mapserver:

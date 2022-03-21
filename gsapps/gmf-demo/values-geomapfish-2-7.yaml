@@ -1,3 +1,9 @@
+global:
+  image:
+    pullPolicy: Always
+  configMapNameOverride:
+    env: geomapfish-prod-2-7-env
+
 shared:
   osm-db-connexion: &osm-db-connexion
     OSM_PGHOST:
@@ -30,88 +36,63 @@ shared:
       key: password
 
 geomapfish:
-  geoportal:
-    ingress:
-      hosts:
-        - name: main
-          host: geomapfish-demo-2-7.camptocamp.com
-          tls:
-            secretName: main-tls
-        - name: test
-          host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
-          tls:
-            secretName: test-tls
-        - name: blue
-          host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
-          tls:
-            secretName: blue-tls
-        - name: green
-          host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
-          tls:
-            secretName: green-tls
-      # Specific to demo
-      additionalPaths:
-        customFeedback:
-          path: /custom/
-          service: geomapfish-prod-2-7-custom-feedback
-        tiles:
-          path: /tiles/
-          service: geomapfish-prod-2-7-tiles
+  ingress:
+    hosts:
+      - name: main
+        host: geomapfish-demo-2-7.camptocamp.com
+        tls:
+          secretName: main-tls
+      - name: test
+        host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: test-tls
+      - name: blue
+        host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: blue-tls
+      - name: green
+        host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+        tls:
+          secretName: green-tls
+    # Specific to demo
+    additionalPaths:
+      customFeedback:
+        path: /custom/
+        service: geomapfish-prod-2-7-custom-feedback
+      tiles:
+        path: /tiles/
+        service: geomapfish-prod-2-7-tiles
 
-    env:
-      <<: *osm-db-connexion
-      AZURE_CONTAINER_NAME:
-        value: balanced-woodcock
-      PRINT_APP:
-        value: zen-carson-2-7
-      # Should be removed on non demo project
-      PRINT_URL:
-        value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
-        order: 1
-      # Specific to demo
-      WMTS_URL:
-        value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
-      SMTP_PASSWORD:
-        type: secret
-        name: secrets
-        key: SMTP_PASSWORD
-      SMTP_USER:
-        type: secret
-        name: secrets
-        key: SMTP_USER
+  env:
+    <<: *osm-db-connexion
+    AZURE_CONTAINER_NAME:
+      value: balanced-woodcock
+    PRINT_APP:
+      value: zen-carson-2-7
+    # Should be removed on non demo project
+    PRINT_URL:
+      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
+      order: 1
+    # Specific to demo
+    WMTS_URL:
+      value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
+    SMTP_PASSWORD:
+      type: secret
+      name: secrets
+      key: SMTP_PASSWORD
+    SMTP_USER:
+      type: secret
+      name: secrets
+      key: SMTP_USER
 
-    config: &config
-      image:
-        repository: camptocamp/geomapfishdemo-config
-        tag: prod-2-7
-        sha: fc91042b7a054929536634557178d0b9f0fe9d63719e19fc7c9bfc85b2c6668a
+  config: &config
+    image:
+      repository: camptocamp/geomapfishdemo-config
+      tag: prod-2-7
+      sha: fc91042b7a054929536634557178d0b9f0fe9d63719e19fc7c9bfc85b2c6668a
 
-    tools:
-      enabled: true
-
-    configMapNameOverride: &configMapNameOverride
-      env: geomapfish-prod-2-7-env
-
-  mapserver:
-    configMapNameOverride: *configMapNameOverride
-    config:
-      <<: *config
-      # Specific to demo
-      env: *osm-db-connexion
-
-  qgisserver:
-    env:
-      QGIS_SERVER_LANDING_PAGE_PREFIX:
-        value: /mapserv_proxy/qgis
-    readinessProbe:
-      httpGet:
-        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
-    livenessProbe:
-      httpGet:
-        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
-
-    configMapNameOverride: *configMapNameOverride
-    config: *config
+  tools:
+    enabled: true
 
   postgresql:
     schema: main_2_7
@@ -148,8 +129,26 @@ geomapfish:
           VISIBLE_WEB_HOST: geomapfish-demo-2-7.camptocamp.com
           VISIBLE_ENTRY_POINT: /
 
+mapserver:
+  config:
+    <<: *config
+    # Specific to demo
+    env: *osm-db-connexion
+
+qgisserver:
+  env:
+    QGIS_SERVER_LANDING_PAGE_PREFIX:
+      value: /mapserv_proxy/qgis
+  readinessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+  livenessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+
+  config: *config
+
 fts-cron:
-  configMapNameOverride: *configMapNameOverride
   initContainers:
     config: *config
 
@@ -161,10 +160,6 @@ custom-feedback:
     reloader.stakater.com/auto: 'true'
   podAnnotations:
     co.elastic.logs/enabled: 'true'
-  image:
-    pullPolicy: Always
-
-  configMapNameOverride: *configMapNameOverride
 
   service:
     ports:

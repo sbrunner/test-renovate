@@ -6,7 +6,15 @@ version: 1.0.0
 dependencies:
   - name: geomapfish
     repository: https://camptocamp.github.io/helm-geomapfish/
-    version: 0.1.20
+    version: 0.2.0
+  - name: apache
+    repository: https://camptocamp.github.io/helm-apache/
+    alias: mapserver
+    version: 0.2.0
+  - name: apache
+    repository: https://camptocamp.github.io/helm-apache/
+    alias: qgisserver
+    version: 0.2.0
   - name: custom-pod
     repository: https://camptocamp.github.io/helm-custom-pod/
     alias: custom-feedback

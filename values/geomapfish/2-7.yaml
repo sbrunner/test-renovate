@@ -1,3 +1,7 @@
+global:
+  image:
+    pullPolicy: Always
+
 shared:
   redisEnv: &redisEnv
     C2C_REDIS_DB:
@@ -165,319 +169,310 @@ geomapfish:
   redis:
     host: redis
 
-  geoportal:
-    image:
-      pullPolicy: Always
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podAnnotations:
+    co.elastic.logs/enabled: 'true'
+  podLabels:
+    aadpodidbinding: gmf
+
+  probe:
+    liveness:
+      initialDelaySeconds: 9999
+      periodSeconds: 60
+    readiness:
+      timeoutSeconds: 120
+      initialDelaySeconds: 10
+      periodSeconds: 180
+
+  ingress:
+    enabled: true
     annotations:
-      reloader.stakater.com/auto: 'true'
-    podAnnotations:
-      co.elastic.logs/enabled: 'true'
-    podLabels:
-      aadpodidbinding: gmf
+      acme.cert-manager.io/http01-edit-in-place: 'true'
+      cert-manager.io/cluster-issuer: letsencrypt-dnsonly
+      ingress.kubernetes.io/ssl-redirect: 'true'
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+    paths:
+      - /
 
-    probe:
-      liveness:
-        initialDelaySeconds: 9999
-        periodSeconds: 60
-      readiness:
-        timeoutSeconds: 120
-        initialDelaySeconds: 10
-        periodSeconds: 180
+  resources:
+    limits:
+      #memory: 425Mi
+      memory: 825Mi
+    requests:
+      memory: 271Mi
+      cpu: 88m
 
-    ingress:
-      enabled: true
-      annotations:
-        acme.cert-manager.io/http01-edit-in-place: 'true'
-        cert-manager.io/cluster-issuer: letsencrypt-dnsonly
-        ingress.kubernetes.io/ssl-redirect: 'true'
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
-        traefik.ingress.kubernetes.io/router.tls: 'true'
-      paths:
-        - /
-
+  config: &config
+    env:
+      <<: *configEnv
     resources:
-      limits:
-        #memory: 425Mi
-        memory: 825Mi
       requests:
-        memory: 271Mi
-        cpu: 88m
+        memory: 16Mi
+        cpu: 1m
+      limits:
+        memory: 64Mi
 
-    config: &config
-      env:
-        <<: *configEnv
-      resources:
-        requests:
-          memory: 16Mi
-          cpu: 1m
-        limits:
-          memory: 64Mi
+  env: &geoportal-env
+    <<: [*configEnv, *c2cwsgiutilsEnv]
+    RASTER_BASE_PATH:
+      value: /vsiaz/$(AZURE_CONTAINER_NAME)
+      order: 1
+    SENTRY_CLIENT_RELEASE:
+      type: configMap
+      name: env
+      key: GEOPORTAL_CLIENT_RELEASE
+    SENTRY_TAG_SERVICE:
+      value: geoportal
+    SQLALCHEMY_POOL_RECYCLE:
+      value: '30'
+    SQLALCHEMY_POOL_SIZE:
+      value: '1'
+    SQLALCHEMY_MAX_OVERFLOW:
+      value: '10'
+    SQLALCHEMY_SLAVE_POOL_RECYCLE:
+      value: '30'
+    SQLALCHEMY_SLAVE_POOL_SIZE:
+      value: '5'
+    SQLALCHEMY_SLAVE_MAX_OVERFLOW:
+      value: '10'
+    REDIS_LOCK_TIMEOUT:
+      value: '180' # 3 minutes
+    SENTRY_TRACES_SAMPLE_RATE:
+      value: '0.1'
+    C2C_DB_MAINTENANCE_VIEW_ENABLED:
+      value: '1'
+    TILECLOUDCHAIN_INTERNAL_URL:
+      type: configMap
+      name: env
+      key: TILECLOUDCHAIN_INTERNAL_URL
+    GEOPORTAL_INTERNAL_URL:
+      type: configMap
+      name: env
+      key: GEOPORTAL_INTERNAL_URL
+    MAPSERVER_URL:
+      type: configMap
+      name: env
+      key: MAPSERVER_URL
+    QGISSERVER_URL:
+      type: configMap
+      name: env
+      key: QGISSERVER_URL
+    AUTHTKT_SECRET:
+      type: secret
+      name: secrets
+      key: AUTHTKT_SECRET
+    C2C_SECRET:
+      type: secret
+      name: secrets
+      key: C2C_SECRET
+  prometheus: true
 
-    env: &geoportal-env
+  alembic:
+    mainStatic: true
+    env:
       <<: [*configEnv, *c2cwsgiutilsEnv]
-      RASTER_BASE_PATH:
-        value: /vsiaz/$(AZURE_CONTAINER_NAME)
-        order: 1
       SENTRY_CLIENT_RELEASE:
         type: configMap
         name: env
-        key: GEOPORTAL_CLIENT_RELEASE
+        key: ALEMBIC_CLIENT_RELEASE
       SENTRY_TAG_SERVICE:
-        value: geoportal
-      SQLALCHEMY_POOL_RECYCLE:
-        value: '30'
-      SQLALCHEMY_POOL_SIZE:
-        value: '1'
-      SQLALCHEMY_MAX_OVERFLOW:
-        value: '10'
-      SQLALCHEMY_SLAVE_POOL_RECYCLE:
-        value: '30'
-      SQLALCHEMY_SLAVE_POOL_SIZE:
-        value: '5'
-      SQLALCHEMY_SLAVE_MAX_OVERFLOW:
-        value: '10'
-      REDIS_LOCK_TIMEOUT:
-        value: '180' # 3 minutes
-      SENTRY_TRACES_SAMPLE_RATE:
-        value: '0.1'
-      C2C_DB_MAINTENANCE_VIEW_ENABLED:
-        value: '1'
-      TILECLOUDCHAIN_INTERNAL_URL:
-        type: configMap
-        name: env
-        key: TILECLOUDCHAIN_INTERNAL_URL
-      GEOPORTAL_INTERNAL_URL:
-        type: configMap
-        name: env
-        key: GEOPORTAL_INTERNAL_URL
-      MAPSERVER_URL:
-        type: configMap
-        name: env
-        key: MAPSERVER_URL
-      QGISSERVER_URL:
-        type: configMap
-        name: env
-        key: QGISSERVER_URL
-      AUTHTKT_SECRET:
-        type: secret
-        name: secrets
-        key: AUTHTKT_SECRET
-      C2C_SECRET:
-        type: secret
-        name: secrets
-        key: C2C_SECRET
-    prometheus: true
-
-    alembic:
-      mainStatic: true
-      env:
-        <<: [*configEnv, *c2cwsgiutilsEnv]
-        SENTRY_CLIENT_RELEASE:
-          type: configMap
-          name: env
-          key: ALEMBIC_CLIENT_RELEASE
-        SENTRY_TAG_SERVICE:
-          value: alembic
-
-      annotations:
-        reloader.stakater.com/auto: 'true'
-      podAnnotations:
-        co.elastic.logs/enabled: 'true'
-
-      resources:
-        requests:
-          cpu: 100m
-          memory: 40Mi
-        limits:
-          memory: 128Mi
-
-    busybox:
-      resources:
-        requests:
-          cpu: 1m
-          memory: 80Ki
-        limits:
-          memory: 4Mi
-
-    tools:
-      enabled: false
-      env: *configEnv
-
-      annotations:
-        reloader.stakater.com/auto: 'true'
-      podLabels:
-        aadpodidbinding: gmf
-
-      resources:
-        limits:
-          memory: 200Mi
-        requests:
-          memory: 100Mi
-          cpu: 1m
-
-  mapserver:
-    command: [/bin/bash]
-    args: [/usr/local/bin/start-server]
-    image:
-      pullPolicy: Always
-
-    env:
-      PGOPTIONS:
-        type: configMap
-        name: env
-        key: PGOPTIONS
-      MAX_PROCESSES:
-        value: '4'
-      MAPSERVER_CATCH_SEGV:
-        value: '1'
-      SEGFAULT_SIGNALS:
-        value: all
+        value: alembic
 
     annotations:
       reloader.stakater.com/auto: 'true'
     podAnnotations:
       co.elastic.logs/enabled: 'true'
-    podLabels:
-      aadpodidbinding: gmf
 
     resources:
       requests:
-        memory: 110.5Mi
-        cpu: 4m
+        cpu: 100m
+        memory: 40Mi
       limits:
-        memory: 560Mi
+        memory: 128Mi
 
-    readinessProbe:
-      httpGet:
-        path: /
-        port: http
-      initialDelaySeconds: 2
-      timeoutSeconds: 10
-    livenessProbe:
-      httpGet:
-        path: /
-        port: http
-      initialDelaySeconds: 2
-      timeoutSeconds: 10
-      periodSeconds: 30
-      failureThreshold: 5
+  busybox:
+    resources:
+      requests:
+        cpu: 1m
+        memory: 80Ki
+      limits:
+        memory: 4Mi
 
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 33 # www-data
+  tools:
+    enabled: false
+    env: *configEnv
 
-    config: *config
-
-    apacheExporter: &apacheExporter
-      resources:
-        limits:
-          memory: 20Mi
-        requests:
-          memory: 10Mi
-          cpu: 1m
-
-  qgisserver:
     annotations:
       reloader.stakater.com/auto: 'true'
-    podAnnotations:
-      co.elastic.logs/enabled: 'true'
     podLabels:
       aadpodidbinding: gmf
-    image:
-      pullPolicy: Always
-
-    env:
-      <<: [*redisEnv, *azure-blob-env]
-      MAX_PROCESSES:
-        value: '4'
-      MAX_REQUESTS_PER_PROCESS:
-        value: '500'
-      GEOMAPFISH_ACCESSCONTROL_BASE_URL:
-        type: configMap
-        name: env
-        key: QGISSERVER_URL
-      FCGID_IO_TIMEOUT:
-        value: '120'
-      CPL_VSIL_CURL_USE_CACHE:
-        value: 'TRUE'
-      CPL_VSIL_CURL_CACHE_SIZE:
-        value: '128000000'
-      CPL_VSIL_CURL_USE_HEAD:
-        value: 'FALSE'
-      GDAL_DISABLE_READDIR_ON_OPEN:
-        value: 'TRUE'
-      QGIS_SERVER_LOG_LEVEL:
-        value: '2' # 0 for verbose
-      QGIS_CUSTOM_CONFIG_PATH:
-        value: /tmp
-      QGIS_SERVER_TRUST_LAYER_METADATA:
-        value: 'TRUE'
-      QGIS_SERVER_PARALLEL_RENDERING:
-        value: 'FALSE'
-      MAX_CACHE_LAYERS:
-        value: '100'
-      QGIS_SERVER_IGNORE_BAD_LAYERS:
-        value: 'TRUE'
-      QGIS_SERVER_CACHE_SIZE:
-        value: '60' # MB
-      QGIS_SERVER_WMS_MAX_HEIGHT:
-        value: '5000'
-      QGIS_SERVER_WMS_MAX_WIDTH:
-        value: '5000'
-      QGIS_SERVER_API_WFS3_MAX_LIMIT:
-        value: '10000'
-      QGIS_SERVER_DISABLE_GETPRINT:
-        value: 'TRUE'
-      QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES:
-        value: /etc/qgisserver/
-      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE:
-        value: fr
-      QGIS_AUTH_DB_DIR_PATH:
-        value: /etc/qgisserver/
-      PGSERVICEFILE:
-        value: /etc/qgisserver/pg_service.conf
 
     resources:
-      requests:
-        memory: 113Mi
-        cpu: 12.5m
       limits:
-        memory: 1300Mi
-
-    readinessProbe:
-      httpGet:
-        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-        port: http
-      initialDelaySeconds: 20
-      timeoutSeconds: 300
-    livenessProbe:
-      httpGet:
-        path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-        port: http
-      initialDelaySeconds: 20
-      timeoutSeconds: 300
-      periodSeconds: 60
-      failureThreshold: 5
-
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 33 # www-data
-
-    config: *config
-
-    apacheExporter: *apacheExporter
+        memory: 200Mi
+      requests:
+        memory: 100Mi
+        cpu: 1m
 
   securityContext:
     runAsNonRoot: true
     runAsUser: 33 # www-data
+
+mapserver:
+  command: [/bin/bash]
+  args: [/usr/local/bin/start-server]
+
+  env:
+    PGOPTIONS:
+      type: configMap
+      name: env
+      key: PGOPTIONS
+    MAX_PROCESSES:
+      value: '4'
+    MAPSERVER_CATCH_SEGV:
+      value: '1'
+    SEGFAULT_SIGNALS:
+      value: all
+
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podAnnotations:
+    co.elastic.logs/enabled: 'true'
+  podLabels:
+    aadpodidbinding: gmf
+
+  resources:
+    requests:
+      memory: 110.5Mi
+      cpu: 4m
+    limits:
+      memory: 560Mi
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 2
+    timeoutSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 2
+    timeoutSeconds: 10
+    periodSeconds: 30
+    failureThreshold: 5
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
+
+  config: *config
+
+  apacheExporter: &apacheExporter
+    resources:
+      limits:
+        memory: 20Mi
+      requests:
+        memory: 10Mi
+        cpu: 1m
+
+qgisserver:
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podAnnotations:
+    co.elastic.logs/enabled: 'true'
+  podLabels:
+    aadpodidbinding: gmf
+
+  env:
+    <<: [*redisEnv, *azure-blob-env]
+    MAX_PROCESSES:
+      value: '4'
+    MAX_REQUESTS_PER_PROCESS:
+      value: '500'
+    GEOMAPFISH_ACCESSCONTROL_BASE_URL:
+      type: configMap
+      name: env
+      key: QGISSERVER_URL
+    FCGID_IO_TIMEOUT:
+      value: '120'
+    CPL_VSIL_CURL_USE_CACHE:
+      value: 'TRUE'
+    CPL_VSIL_CURL_CACHE_SIZE:
+      value: '128000000'
+    CPL_VSIL_CURL_USE_HEAD:
+      value: 'FALSE'
+    GDAL_DISABLE_READDIR_ON_OPEN:
+      value: 'TRUE'
+    QGIS_SERVER_LOG_LEVEL:
+      value: '2' # 0 for verbose
+    QGIS_CUSTOM_CONFIG_PATH:
+      value: /tmp
+    QGIS_SERVER_TRUST_LAYER_METADATA:
+      value: 'TRUE'
+    QGIS_SERVER_PARALLEL_RENDERING:
+      value: 'FALSE'
+    MAX_CACHE_LAYERS:
+      value: '100'
+    QGIS_SERVER_IGNORE_BAD_LAYERS:
+      value: 'TRUE'
+    QGIS_SERVER_CACHE_SIZE:
+      value: '60' # MB
+    QGIS_SERVER_WMS_MAX_HEIGHT:
+      value: '5000'
+    QGIS_SERVER_WMS_MAX_WIDTH:
+      value: '5000'
+    QGIS_SERVER_API_WFS3_MAX_LIMIT:
+      value: '10000'
+    QGIS_SERVER_DISABLE_GETPRINT:
+      value: 'TRUE'
+    QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES:
+      value: /etc/qgisserver/
+    QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE:
+      value: fr
+    QGIS_AUTH_DB_DIR_PATH:
+      value: /etc/qgisserver/
+    PGSERVICEFILE:
+      value: /etc/qgisserver/pg_service.conf
+
+  resources:
+    requests:
+      memory: 113Mi
+      cpu: 12.5m
+    limits:
+      memory: 1300Mi
+
+  readinessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
+      port: http
+    initialDelaySeconds: 20
+    timeoutSeconds: 300
+  livenessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
+      port: http
+    initialDelaySeconds: 20
+    timeoutSeconds: 300
+    periodSeconds: 60
+    failureThreshold: 5
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
+
+  config: *config
+
+  apacheExporter: *apacheExporter
 
 fts-cron:
   schedule: 35 * * * *
 
   podAnnotations:
     co.elastic.logs/enabled: 'true'
-  image:
-    pullPolicy: Always
 
   volumes:
     - name: configs

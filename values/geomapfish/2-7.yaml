@@ -1,3 +1,7 @@
+global:
+  image:
+    pullPolicy: Always
+
 shared:
   redisEnv: &redisEnv
     C2C_REDIS_DB:
@@ -166,8 +170,6 @@ geomapfish:
     host: redis
 
   geoportal:
-    image:
-      pullPolicy: Always
     annotations:
       reloader.stakater.com/auto: 'true'
     podAnnotations:
@@ -318,8 +320,6 @@ geomapfish:
   mapserver:
     command: [/bin/bash]
     args: [/usr/local/bin/start-server]
-    image:
-      pullPolicy: Always
 
     env:
       PGOPTIONS:
@@ -383,8 +383,6 @@ geomapfish:
       co.elastic.logs/enabled: 'true'
     podLabels:
       aadpodidbinding: gmf
-    image:
-      pullPolicy: Always
 
     env:
       <<: [*redisEnv, *azure-blob-env]
@@ -476,8 +474,6 @@ fts-cron:
 
   podAnnotations:
     co.elastic.logs/enabled: 'true'
-  image:
-    pullPolicy: Always
 
   volumes:
     - name: configs

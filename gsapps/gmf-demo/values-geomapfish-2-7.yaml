@@ -1,3 +1,9 @@
+global:
+  image:
+    pullPolicy: Always
+  configMapNameOverride:
+    env: geomapfish-prod-2-7-env
+
 shared:
   osm-db-connexion: &osm-db-connexion
     OSM_PGHOST:
@@ -89,11 +95,7 @@ geomapfish:
     tools:
       enabled: true
 
-    configMapNameOverride: &configMapNameOverride
-      env: geomapfish-prod-2-7-env
-
   mapserver:
-    configMapNameOverride: *configMapNameOverride
     config:
       <<: *config
       # Specific to demo
@@ -110,7 +112,6 @@ geomapfish:
       httpGet:
         path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
 
-    configMapNameOverride: *configMapNameOverride
     config: *config
 
   postgresql:
@@ -149,7 +150,6 @@ geomapfish:
           VISIBLE_ENTRY_POINT: /
 
 fts-cron:
-  configMapNameOverride: *configMapNameOverride
   initContainers:
     config: *config
 
@@ -161,10 +161,6 @@ custom-feedback:
     reloader.stakater.com/auto: 'true'
   podAnnotations:
     co.elastic.logs/enabled: 'true'
-  image:
-    pullPolicy: Always
-
-  configMapNameOverride: *configMapNameOverride
 
   service:
     ports:

@@ -133,7 +133,7 @@ mutualize:
         memory: 240Mi
 
 ingress:
-  hostsGroup:
+  hostsGroups:
     - name: main
       hosts:
         - geoservices.camptocamp.com

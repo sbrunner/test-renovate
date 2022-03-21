@@ -131,7 +131,7 @@ mutualize:
         memory: 210Mi
 
 ingress:
-  hostsGroup:
+  hostsGroups:
     - name: test
       hosts:
         - mutualize-int.apps.gs-ch-dev.camptocamp.com

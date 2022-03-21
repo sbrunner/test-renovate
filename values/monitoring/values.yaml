@@ -1,7 +1,8 @@
-monitoring:
+global:
   image:
     pullPolicy: Always
 
+monitoring:
   processOoms:
     image:
       repository: camptocamp/es-ooms-exporter

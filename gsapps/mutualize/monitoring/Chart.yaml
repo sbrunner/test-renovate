@@ -6,4 +6,4 @@ version: 1.0.0
 dependencies:
   - name: monitoring
     repository: https://camptocamp.github.io/helm-monitoring/
-    version: 0.2.5
+    version: 0.2.6

@@ -7,6 +7,11 @@
 # print logs: 5
 # tilecloud-chain: 6
 
+global:
+  image:
+    pullPolicy: Always
+  revisionHistoryLimit: 1
+
 sentry-env-base: &sentry-env-base
   SENTRY_URL:
     value: https://0454083c8df943d0a256825b83b36e5e@o330647.ingest.sentry.io/1853817
@@ -480,9 +485,6 @@ mutualize:
     runAsNonRoot: true
     runAsUser: 33 # www-data
 
-  image:
-    pullPolicy: Always
-
   ingress:
     enabled: true
     annotations:
@@ -493,5 +495,3 @@ mutualize:
       traefik.ingress.kubernetes.io/router.tls: 'true'
     paths:
       - /
-
-  revisionHistoryLimit: 1

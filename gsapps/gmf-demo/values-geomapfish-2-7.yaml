@@ -36,33 +36,6 @@ shared:
       key: password
 
 geomapfish:
-  ingress:
-    hosts:
-      - name: main
-        host: geomapfish-demo-2-7.camptocamp.com
-        tls:
-          secretName: main-tls
-      - name: test
-        host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: test-tls
-      - name: blue
-        host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: blue-tls
-      - name: green
-        host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: green-tls
-    # Specific to demo
-    additionalPaths:
-      customFeedback:
-        path: /custom/
-        service: geomapfish-prod-2-7-custom-feedback
-      tiles:
-        path: /tiles/
-        service: geomapfish-prod-2-7-tiles
-
   env:
     <<: *osm-db-connexion
     AZURE_CONTAINER_NAME:
@@ -147,6 +120,25 @@ qgisserver:
       path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
 
   config: *config
+
+ingress:
+  hostsGroups:
+    - name: main
+      hosts:
+        - geomapfish-demo-2-7.camptocamp.com
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+    - name: test
+      hosts:
+        - geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+        - geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+        - geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+
+  paths:
+    # Specific to demo
+    customFeedback:
+      path: /custom/
+      serviceName: custom-feedback
 
 fts-cron:
   initContainers:

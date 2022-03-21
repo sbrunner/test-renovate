@@ -130,17 +130,10 @@ mutualize:
       limits:
         memory: 210Mi
 
-  ingress:
-    hosts:
-      - name: test
-        host: mutualize-int.apps.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: test-print-int-tls
-      - name: blue
-        host: mutualize-int.apps.blue.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: blue-print-int-tls
-      - name: green
-        host: mutualize-int.apps.green.gs-ch-dev.camptocamp.com
-        tls:
-          secretName: green-print-int-tls
+ingress:
+  hostsGroup:
+    - name: test
+      hosts:
+        - mutualize-int.apps.gs-ch-dev.camptocamp.com
+        - mutualize-int.apps.blue.gs-ch-dev.camptocamp.com
+        - mutualize-int.apps.green.gs-ch-dev.camptocamp.com

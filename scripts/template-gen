@@ -33,6 +33,15 @@ def main() -> None:
         os.path.join(args.cluster_apps, "apps", "gmf-projects", "values.yaml"), "r", encoding="utf-8"
     ) as f:
         values = yaml.load(f.read())
+        if args.namespace not in values["gmfProjects"]:
+            print(f"Namespace {args.namespace} not found in: " + ", ".join(values["gmfProjects"].keys()))
+            sys.exit(1)
+        if args.application not in values["gmfProjects"][args.namespace]["apps"]:
+            print(
+                f"Application {args.application} not found in: "
+                + ", ".join(values["gmfProjects"][args.namespace]["apps"].keys())
+            )
+            sys.exit(1)
         application = values["gmfProjects"][args.namespace]["apps"][args.application]
 
     if args.update:

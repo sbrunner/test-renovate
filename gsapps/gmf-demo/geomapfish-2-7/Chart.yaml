@@ -7,6 +7,9 @@ dependencies:
   - name: geomapfish
     repository: https://camptocamp.github.io/helm-geomapfish/
     version: 0.2.0
+  - name: ingress
+    repository: https://camptocamp.github.io/helm-ingress/
+    version: 0.2.2
   - name: apache
     repository: https://camptocamp.github.io/helm-apache/
     alias: mapserver

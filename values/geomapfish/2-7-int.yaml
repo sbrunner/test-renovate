@@ -11,12 +11,6 @@ geomapfish:
       repository: camptocamp/geomapfish-tools
       tag: 2.7
 
-  ingress:
-    additionalPaths:
-      tiles:
-        path: /tiles/
-        service: mutualize-int-ttc
-
   configUrl: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/config/
 
 mapserver:

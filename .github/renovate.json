@@ -17,12 +17,6 @@
       "matchUpdateTypes": [
         "major",
         "minor",
-        "patch",
-        "pin",
-        "digest",
-        "lockFileMaintenance",
-        "rollback",
-        "bump"
       ],
       "enabled": false
     }

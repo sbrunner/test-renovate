@@ -1,41 +1,51 @@
-FROM osgeo/gdal:ubuntu-small-3.4.1 as base
+FROM osgeo/gdal:ubuntu-small-3.4.1 as base-all
 LABEL maintainer "info@camptocamp.org"
 
 # Workaround for setuptools >= 60.0.0
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
 
-RUN \
-  apt update && \
-  DEBIAN_FRONTEND=noninteractive apt install --assume-yes --no-install-recommends \
-  libmapnik3.0 \
-  mapnik-utils \
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    --mount=type=cache,target=/var/cache,sharing=locked \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+  libmapnik3.0 mapnik-utils \
   libdb5.3 \
   fonts-dejavu \
   node-carto \
-  optipng \
-  jpegoptim \
+  optipng jpegoptim \
   postgresql-client-12 net-tools iputils-ping \
-  python3-pip && \
-  apt clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache/*
+  python3-pip python3-wheel
 
-COPY requirements.txt Pipfile Pipfile.lock /app/
-RUN \
+
+FROM base-all as poetry
+
+WORKDIR /tmp
+COPY requirements.txt ./
+RUN --mount=type=cache,target=/root/.cache \
+    python3 -m pip install --disable-pip-version-check --requirement=requirements.txt && \
+    rm requirements.txt
+
+COPY poetry.lock pyproject.toml ./
+RUN poetry export --output=requirements.txt && \
+    poetry export --dev --output=requirements-dev.txt
+
+
+FROM base-all as base
+
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    --mount=type=cache,target=/var/cache,sharing=locked \
+    --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
   DEV_PACKAGES="python3.8-dev build-essential libgeos-dev libmapnik-dev libpq-dev \
   build-essential python3-dev" && \
-  apt update && \
-  DEBIAN_FRONTEND=noninteractive apt install --assume-yes --no-install-recommends \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
   ${DEV_PACKAGES} && \
-  cd /app/ && \
   python3 -m pip install --disable-pip-version-check --no-cache-dir \
-  --requirement=/app/requirements.txt && \
-  pipenv sync --system --clear && \
-  python3 -m compileall /usr/local/lib/python3.8 /usr/lib/python3.8 -q \
-  -x '/usr/local/lib/python3.8/dist-packages/pipenv/' && \
+  --requirement=/poetry/requirements.txt && \
+  python3 -m compileall /usr/local/lib/python3.8 /usr/lib/python3.8 && \
   strip /usr/local/lib/python3.8/dist-packages/shapely/*/*.so && \
-  apt remove --purge --autoremove --yes ${DEV_PACKAGES} binutils && \
-  apt clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache/*
+  apt-get remove --purge --autoremove --yes ${DEV_PACKAGES} binutils
 
 # From c2cwsgiutils
 
@@ -100,7 +110,9 @@ RUN \
 
 FROM base as tests
 
-RUN pipenv sync --dev --system --clear
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
+    python3 -m pip install --disable-pip-version-check --requirement=/poetry/requirements-dev.txt
 
 COPY . /app/
 RUN prospector --output-format=pylint

@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [[ $(git status --porcelain) == "" ]]
+then
+    echo Nothing to commit
+    exit 0
+fi
+
 BRANCH_NAME=update-images-hash-${RANDOM}
 git checkout -b ${BRANCH_NAME}
 git add --all

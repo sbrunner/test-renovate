@@ -1,5 +1,6 @@
 {
   "extends": ["config:base"],
+  "dependencyDashboardApproval": true,
   "baseBranches": ["master", "1.17", "1.15", "1.13"],
   "packageRules": [
     {
@@ -15,13 +16,7 @@
       "branchPrefix": ["1."],
       "matchUpdateTypes": [
         "major",
-        "minor",
-        "patch",
-        "pin",
-        "digest",
-        "lockFileMaintenance",
-        "rollback",
-        "bump"
+        "minor"
       ],
       "enabled": false
     }

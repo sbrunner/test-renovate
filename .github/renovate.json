@@ -14,10 +14,7 @@
     },
     {
       "branchPrefix": ["1."],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-      ],
+      "matchUpdateTypes": ["major", "minor"],
       "enabled": false
     }
   ]

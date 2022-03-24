@@ -1,21 +1,5 @@
 {
   "extends": ["config:base"],
   "dependencyDashboardApproval": true,
-  "baseBranches": ["master", "1.17", "1.15", "1.13"],
-  "packageRules": [
-    {
-      "matchBaseBranches": ["master"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    },
-    {
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true
-    },
-    {
-      "branchPrefix": ["1."],
-      "matchUpdateTypes": ["major", "minor"],
-      "enabled": false
-    }
-  ]
+  "baseBranches": ["master", "1.17"]
 }

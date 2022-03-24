@@ -1,0 +1,20 @@
+---
+name: Auto merge c2c-bot-gis-ci pull request (to update the images hash)
+
+on:
+  workflow_run:
+    workflows:
+      - Continuous integration
+    types:
+      - completed
+jobs:
+  auto-merge:
+    name: Auto merge c2c-bot-gis-ci pull request (to update the images hash)
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: ridedott/merge-me-action@2.9.127
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_LOGIN: c2c-bot-gis-ci

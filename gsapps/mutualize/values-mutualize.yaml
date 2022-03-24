@@ -473,7 +473,7 @@ mutualize:
         - print
     mfp-extras:
       repository: camptocamp/argocd-gs-platform-ch-development-apps
-      dir: apps/mutualize/mfp-extras
+      dir: gsapps/mutualize/mfp-extras
       branch: master
       key: c2crulez
       labels:

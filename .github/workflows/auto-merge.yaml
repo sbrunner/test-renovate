@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: ridedott/merge-me-action@2.9.127
+      - uses: ridedott/merge-me-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_LOGIN: c2c-bot-gis-ci

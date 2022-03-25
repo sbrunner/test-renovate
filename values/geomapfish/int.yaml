@@ -2,6 +2,8 @@ geomapfish:
   redis:
     db: 1
 
+  configUrl: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/config/
+
   geoportal:
     env:
       SQLALCHEMY_POOL_SIZE:

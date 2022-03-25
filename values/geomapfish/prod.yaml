@@ -2,6 +2,8 @@ geomapfish:
   redis:
     db: 0
 
+  configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
+
   geoportal:
     replicaCount: 2
     env:

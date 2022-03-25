@@ -13,8 +13,6 @@ geomapfish:
       tag: 2.7
       atleastOldDays: 20
 
-  configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
-
 mapserver:
   image:
     repository: camptocamp/mapserver

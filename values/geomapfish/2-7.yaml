@@ -58,7 +58,8 @@ shared:
     GUNICORN_LIMIT_REQUEST_LINE:
       value: 8190
     GUNICORN_ACCESS_LOG_FORMAT:
-      value: '%(H)s %({Host}i)s %(m)s %(U)s?%(q)s "%(f)s" "%(a)s" %(s)s %(B)s %(D)s %(p)s'
+      value: '%(H)s %({Host}i)s %(m)s %(U)s?%(q)s "%(f)s" "%(a)s" %(s)s %(B)s %(D)s
+        %(p)s'
 
   dbEnv: &dbEnv
     PGSCHEMA:
@@ -488,7 +489,7 @@ fts-cron:
   initContainers:
     config:
       <<: *config
-      args: ['bash', '-c', 'cp -a /etc/geomapfish/* /etc/geomapfish-volume/']
+      args: [bash, -c, cp -a /etc/geomapfish/* /etc/geomapfish-volume/]
       volumeMounts:
         - name: configs
           mountPath: /etc/geomapfish-volume

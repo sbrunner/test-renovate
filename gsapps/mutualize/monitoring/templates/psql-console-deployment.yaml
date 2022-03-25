@@ -15,12 +15,12 @@ spec:
     spec:
       containers:
         - name: psql-console
-          image: 'ghcr.io/camptocamp/postgres:12-postgis-3'
+          image: ghcr.io/camptocamp/postgres:12-postgis-3
           command:
             - /bin/bash
             - -c
           args:
-            - 'tmux new-session -d && bash'
+            - tmux new-session -d && bash
           tty: true
           stdin: true
           livenessProbe:

@@ -1,6 +1,6 @@
 # argocd-gs-platform-ch-development-apps
 
-# The images tags
+## The images tags
 
 In helm-common we use the `sha` if it exists, otherwise the `tag`.
 

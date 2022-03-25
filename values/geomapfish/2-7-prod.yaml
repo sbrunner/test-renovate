@@ -37,7 +37,4 @@ qgisserver:
 fts-cron:
   containers:
     fts-cron:
-      image: &geoportal-image
-        repository: camptocamp/geomapfishapp-geoportal
-        tag: 2.7
-        atleastOldDays: 20
+      image: *geoportal-image

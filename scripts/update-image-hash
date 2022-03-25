@@ -2,6 +2,7 @@
 
 import argparse
 import glob
+import os
 import subprocess
 from datetime import datetime, timedelta
 from typing import Any, Dict, Set
@@ -63,11 +64,15 @@ def main() -> None:
 
     used_images = set()
     for filename in glob.glob("**/*.yaml", recursive=True):
-        if filename == "secrets.yaml" or filename.startswith("secrets-"):
+        basename = os.path.basename(filename)
+        if basename == "secrets.yaml" or basename.startswith("secrets-"):
             continue
         print(f"Open file: {filename}")
         with open(filename, "r", encoding="utf-8") as f:
-            find_images(yaml.load(f), used_images)
+            values = yaml.load(f)
+            if "global" in values:
+                del values["global"]
+            find_images(values, used_images)
 
     if images:
         images = images.intersection(used_images)
@@ -102,7 +107,10 @@ def main() -> None:
         for sha, date in data.items():
             data[sha] = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%f")
 
-    for filename in glob.glob("**/values*.yaml", recursive=True):
+    for filename in glob.glob("**/*.yaml", recursive=True):
+        basename = os.path.basename(filename)
+        if basename == "secrets.yaml" or basename.startswith("secrets-"):
+            continue
         print(f"Open file: {filename}")
         with open(filename, "r", encoding="utf-8") as f:
             values = yaml.load(f)

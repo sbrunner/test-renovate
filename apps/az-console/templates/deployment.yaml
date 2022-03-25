@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: az-console
-          image: 'mcr.microsoft.com/azure-cli:latest'
+          image: mcr.microsoft.com/azure-cli:latest
           command:
             - /bin/bash
             - -c
           args:
-            - 'sleep infinity'
+            - sleep infinity
           tty: true
           stdin: true
           env:

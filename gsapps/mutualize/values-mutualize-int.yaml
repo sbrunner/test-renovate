@@ -82,7 +82,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish-print-logs
       tag: latest
-      sha: 5a99c71ad384e7a757dc230ba0ec032a75368c6f58865ff33c0dae4d772caee7
+      sha: f12705a09b6f5adeccd788650d26d634e1e56e1890857ec100e045d62d02b03b
 
     env:
       REDIS_DB:

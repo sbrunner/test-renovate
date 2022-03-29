@@ -1,5 +1,6 @@
 {
   "extends": ["config:base", "schedule:earlyMondays"],
+  "dependencyDashboardApproval": true,
   "baseBranches": ["master", "1.17"],
   "packageRules": [
     {

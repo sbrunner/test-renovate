@@ -20,6 +20,11 @@
     {
       "matchDepTypes": ["devDependencies"],
       "automerge": true
+    },
+    {
+      "matchBaseBranches": ["/1\\..*/"],
+      "matchUpdateTypes": ["major", "minor", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
+      "enabled": false
     }
   ]
 }

@@ -476,7 +476,7 @@ ingress:
       path: /tiles/
       serviceName: tiles
 
-ftsCron:
+fts-cron:
   schedule: 35 * * * *
 
   podAnnotations:
@@ -495,7 +495,7 @@ ftsCron:
           mountPath: /etc/geomapfish-volume
 
   containers:
-    ftsCron:
+    fts-cron:
       args:
         - theme2fts
       volumeMounts:

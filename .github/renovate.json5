@@ -1,0 +1,12 @@
+{
+  extends: ['config:base'],
+  dependencyDashboardApproval: true,
+  packageRules: [
+    /** Separate pull request per path */
+    {
+      matchManagers: ['helmv3'],
+      additionalBranchPrefix: '{{baseDir}}-',
+      commitMessageSuffix: '({{baseDir}})',
+    },
+  ],
+}

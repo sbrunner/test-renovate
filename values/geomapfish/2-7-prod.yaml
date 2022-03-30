@@ -36,7 +36,7 @@ qgisserver:
 
   apacheExporter: *apacheExporter
 
-fts-cron:
+ftsCron:
   containers:
-    fts-cron:
+    ftsCron:
       image: *geoportal-image

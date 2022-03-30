@@ -20,6 +20,7 @@ def main() -> None:
     )
     argparser.add_argument("--kube-version", help="The kubernetes version", default="1.20.0")
     argparser.add_argument("--helm", help="The used helm command", default=os.environ.get("HELM", "helm"))
+    argparser.add_argument("--debug", help="Enable verbose output", action="store_true")
     argparser.add_argument(
         "--cluster-apps",
         help="The cluster apps repository path",
@@ -32,7 +33,7 @@ def main() -> None:
     with open(
         os.path.join(args.cluster_apps, "apps", "gmf-projects", "values.yaml"), "r", encoding="utf-8"
     ) as f:
-        values = yaml.load(f.read())
+        values = yaml.load(f.read(), Loader=yaml.SafeLoader)
         if args.namespace not in values["gmfProjects"]:
             print(f"Namespace {args.namespace} not found in: " + ", ".join(values["gmfProjects"].keys()))
             sys.exit(1)
@@ -48,12 +49,12 @@ def main() -> None:
         subprocess.run(
             [args.helm, "dependency", "update"], check=True, cwd=application["path"], stdout=sys.stderr
         )
+    helm_command = [args.helm, "template", f"{args.application}", "."]
+    if args.debug:
+        helm_command.append("--debug")
     subprocess.run(
-        [
-            args.helm,
-            "template",
-            f"{args.application}",
-            ".",
+        helm_command
+        + [
             f"--kube-version={args.kube_version}",
             f"--namespace={args.namespace}",
         ]

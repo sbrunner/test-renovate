@@ -9,4 +9,4 @@ dependencies:
     version: 0.2.0
   - name: ingress
     repository: https://camptocamp.github.io/helm-ingress/
-    version: 0.2.2
+    version: 0.2.3

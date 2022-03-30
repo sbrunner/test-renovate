@@ -140,7 +140,7 @@ ingress:
       path: /custom/
       serviceName: custom-feedback
 
-fts-cron:
+ftsCron:
   initContainers:
     config: *config
 

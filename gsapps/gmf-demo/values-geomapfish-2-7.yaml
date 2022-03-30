@@ -3,6 +3,7 @@ global:
     pullPolicy: Always
   configMapNameOverride:
     env: geomapfish-prod-2-7-env
+    ingress: geomapfish-prod-2-7-ingress
 
 shared:
   osm-db-connexion: &osm-db-connexion

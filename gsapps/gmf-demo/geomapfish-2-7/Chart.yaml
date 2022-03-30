@@ -25,4 +25,4 @@ dependencies:
   - name: custom-cron
     repository: https://camptocamp.github.io/helm-custom-cron/
     alias: fts-cron
-    version: 0.1.2
+    version: 0.2.0

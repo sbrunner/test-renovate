@@ -3,7 +3,7 @@ geomapfish:
     repository: camptocamp/geomapfishapp-geoportal
     tag: 2.7
     atleastOldDays: 20
-    sha: 12660b9995532f7ff38153cabdb6a1e9f37a0813c8e13f6cf27523d58a8d7335
+    sha: c7e89236c36c58c92f5d9ed5538bbb971c51ef69c43a23110a351f254aae8fe2
 
   alembic:
     image: *geoportal-image
@@ -13,26 +13,28 @@ geomapfish:
       repository: camptocamp/geomapfish-tools
       tag: 2.7
       atleastOldDays: 20
-      sha: 0961caf45f16c6ce2e34d46196a24c0939e78dc070091594bd46cdad00ba1b16
+      sha: 1831f08f0058243b01f2e8a65b3a0b7f3611564ed85acd7472216903cb1dd8c4
 
 mapserver:
   image:
     repository: camptocamp/mapserver
     tag: 7.6-20-04
     atleastOldDays: 20
+    sha: 688e8abe793b7026576f2707989ad8dd376a79cf84419b1272ab92152738ba51
 
   apacheExporter: &apacheExporter
     image:
       repository: quay.io/lusitaniae/apache-exporter
       tag: latest
       atleastOldDays: 20
+      sha: 266abe2e6932edd5a420499cdab28e7e394aa4a05c175d630dde965cedc9203e
 
 qgisserver:
   image:
     repository: camptocamp/geomapfish-qgisserver
-    #tag: gmf2.7-qgis3.22
     tag: gmf2.7-qgismaster
     atleastOldDays: 20
+    sha: 2eeaa1c6f9e02ae136d1423fd9c7d54e7d9dafa7ab44619267573466cbef4260
 
   apacheExporter: *apacheExporter
 

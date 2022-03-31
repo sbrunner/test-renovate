@@ -34,6 +34,7 @@ qgisserver:
     repository: camptocamp/geomapfish-qgisserver
     tag: gmf2.7-qgis3.22
     atleastOldDays: 20
+    sha: 7533c83b9c6f06eb1ae9b9c930677609cff9d66154d4e5d84bdcb31d81fd3e64
 
   apacheExporter: *apacheExporter
 

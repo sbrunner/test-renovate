@@ -34,29 +34,29 @@ shared:
   c2cwsgiutilsEnv: &c2cwsgiutilsEnv
     <<: *redisEnv
     C2C_LOG_VIEW_ENABLED:
-      value: 1
+      value: '1'
     C2C_DEBUG_VIEW_ENABLED:
-      value: 1
+      value: '1'
     C2C_SQL_PROFILER_ENABLED:
-      value: 1
+      value: '1'
     LOG_TYPE:
       value: json
     C2C_REQUESTS_DEFAULT_TIMEOUT:
-      value: 30
+      value: '30'
     GUNICORN_CMD_ARGS:
       value: --worker-tmp-dir=/dev/shm
     GUNICORN_WORKERS:
-      value: 2
+      value: '2'
     GUNICORN_THREADS:
-      value: 10
+      value: '10'
     GUNICORN_TIMEOUT:
-      value: 30
+      value: '30'
     GUNICORN_MAX_REQUESTS:
-      value: 2000
+      value: '2000'
     GUNICORN_MAX_REQUESTS_JITTER:
-      value: 200
+      value: '200'
     GUNICORN_LIMIT_REQUEST_LINE:
-      value: 8190
+      value: '8190'
     GUNICORN_ACCESS_LOG_FORMAT:
       value: '%(H)s %({Host}i)s %(m)s %(U)s?%(q)s "%(f)s" "%(a)s" %(s)s %(B)s %(D)s
         %(p)s'

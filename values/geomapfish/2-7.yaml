@@ -198,6 +198,7 @@ geomapfish:
       cpu: 88m
 
   config: &config
+    enabled: true
     env:
       <<: *configEnv
     resources:

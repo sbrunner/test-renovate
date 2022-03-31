@@ -363,7 +363,9 @@ mapserver:
     runAsNonRoot: true
     runAsUser: 33 # www-data
 
-  config: *config
+  config:
+    <<: *config
+    folder: /etc/mapserver/
 
   apacheExporter: &apacheExporter
     resources:
@@ -458,7 +460,9 @@ qgisserver:
     runAsNonRoot: true
     runAsUser: 33 # www-data
 
-  config: *config
+  config:
+    <<: *config
+    folder: /etc/qgisserver/
 
   apacheExporter: *apacheExporter
 

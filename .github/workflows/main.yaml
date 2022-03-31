@@ -34,6 +34,7 @@ jobs:
         run: c2cciutils-checks
 
       - name: Test the update-image-hash script
-        run: scripts/update-image-hash
+        run: scripts/update-image-hash camptocamp/mapserver:7.6-20-04
+        timeout-minutes: 1
       - run: c2cciutils-checks --fix --check=prettier
       - run: git diff

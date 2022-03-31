@@ -365,7 +365,7 @@ mapserver:
 
   config:
     <<: *config
-    folder: /etc/mapserver/
+    folder: /etc/mapserver
 
   apacheExporter: &apacheExporter
     resources:
@@ -462,7 +462,7 @@ qgisserver:
 
   config:
     <<: *config
-    folder: /etc/qgisserver/
+    folder: /etc/qgisserver
 
   apacheExporter: *apacheExporter
 

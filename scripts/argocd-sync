@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import re
+import subprocess
+
+import yaml
+
+
+def main() -> None:
+    """
+    Sync the application on ArgoCD on each commit on GitHub master branch.
+    """
+
+    parser = argparse.ArgumentParser(
+        description="Sync the application on ArgoCD on each commit on GitHub master branch."
+    )
+    parser.add_argument("--dry-run", help="Dry run.", action="store_true")
+    args = parser.parse_args()
+
+    app_list = json.loads(
+        subprocess.run(
+            ["argocd", "app", "list", "--output=json"], stdout=subprocess.PIPE, check=True
+        ).stdout.decode("utf-8")
+    )
+    apps = {app["metadata"]["name"] for app in app_list}
+
+    with open("data/no-sync.yaml", "r", encoding="utf-8") as no_sync_file:
+        no_sync_re = [
+            re.compile(pattern) for pattern in yaml.load(no_sync_file, Loader=yaml.SafeLoader)["apps_re"]
+        ]
+
+    ignored_apps = set()
+    for app in apps:
+        for no_sync in no_sync_re:
+            if no_sync.match(app):
+                ignored_apps.add(app)
+                break
+
+    sync_apps = apps - ignored_apps
+
+    print("Ignored applications:")
+    print("\n".join(ignored_apps))
+    print()
+    print("Application that will be synced:")
+    print("\n".join(sync_apps))
+    print()
+
+    if not args.dry_run:
+        subprocess.run(["argocd", "app", "sync", "--async"] + sync_apps, check=True)
+
+
+if __name__ == "__main__":
+    main()

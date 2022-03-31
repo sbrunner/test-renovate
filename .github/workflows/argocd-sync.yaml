@@ -1,0 +1,32 @@
+name: ArgoCD - sync
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  main:
+    name: ArgoCD - sync
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    env:
+      ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+      # argocd.apps.gs-ch-dev.camptocamp.com:443
+      ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+      ARGOCD_OPTS: --grpc-web
+      KUBECTL_EXTERNAL_DIFF: diff -u
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup ArgoCD
+        run: |
+          mkdir "$GITHUB_WORKSPACE/bin"
+          curl -L https://github.com/argoproj/argo-cd/releases/download/v2.0.3/argocd-linux-amd64 > "$GITHUB_WORKSPACE/bin/argocd"
+          echo "$GITHUB_WORKSPACE/bin" >> "$GITHUB_PATH"
+          chmod +x "$GITHUB_WORKSPACE/bin/argocd"
+
+      - name: ArgoCD - sync
+        run: scripts/argocd-sync

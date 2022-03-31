@@ -1,7 +1,4 @@
 geomapfish:
-  redis:
-    db: 0
-
   configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
 
   mutualize:
@@ -12,9 +9,23 @@ geomapfish:
     PRINT_URL:
       value: https://geoservices.camptocamp.com/print/$(PRINT_APP)/
       order: 1
+    REDIS_DB: &redis_db
+      value: '2'
+
+  alembic:
+    env:
+      REDIS_DB: *redis_db
 
 mapserver:
   replicaCount: 2
 
 qgisserver:
   replicaCount: 2
+  env:
+    REDIS_DB: *redis_db
+
+fts-cron:
+  containers:
+    fts-cron:
+      env:
+        REDIS_DB: *redis_db

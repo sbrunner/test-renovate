@@ -1,8 +1,8 @@
 geomapfish:
-  redis:
-    db: 1
-
   configUrl: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/config/
+
+  mutualize:
+    tccService: mutualize-int-tcc.gs-mutualize.svc.cluster.local
 
   env:
     SQLALCHEMY_POOL_SIZE:
@@ -10,8 +10,21 @@ geomapfish:
     SQLALCHEMY_MAX_OVERFLOW:
       value: '4'
     PRINT_URL:
-      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/$(PRINT_APP)/
+      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
       order: 1
+    REDIS_DB: &redis_db
+      value: '1'
 
-  mutualize:
-    tccService: mutualize-int-tcc.gs-mutualize.svc.cluster.local
+  alembic:
+    env:
+      REDIS_DB: *redis_db
+
+qgisserver:
+  env:
+    REDIS_DB: *redis_db
+
+fts-cron:
+  containers:
+    fts-cron:
+      env:
+        REDIS_DB: *redis_db

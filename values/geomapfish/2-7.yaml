@@ -4,32 +4,27 @@ global:
 
 shared:
   redisEnv: &redisEnv
-    C2C_REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
-    C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: REDIS_GEOPORTAL_BROADCAST_PREFIX
-    C2C_REDIS_SENTINELS:
-      value: redis:26379
-    C2C_REDIS_TIMEOUT:
-      value: 30
-    C2C_REDIS_SERVICENAME:
-      value: mymaster
     REDIS_HOST:
       value: redis
-    REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
+    REDIS_PORT:
+      value: '26379'
+    C2C_REDIS_DB:
+      value: $(REDIS_DB)
+      count: 1
+    C2C_BROADCAST_PREFIX:
+      value: broadcast_geoportal_$(REDIS_DB)_
+      order: 1
+    C2C_REDIS_SENTINELS:
+      value: $(REDIS_HOST):$(REDIS_PORT)
+      order: 1
+    C2C_REDIS_TIMEOUT:
+      value: '30'
+    C2C_REDIS_SERVICENAME:
+      value: mymaster
     REDIS_SERVICENAME:
       value: mymaster
     REDIS_TIMEOUT:
-      value: 30
-    REDIS_PORT:
-      value: 26379
+      value: '30'
 
   c2cwsgiutilsEnv: &c2cwsgiutilsEnv
     <<: *redisEnv
@@ -61,19 +56,14 @@ shared:
       value: '%(H)s %({Host}i)s %(m)s %(U)s?%(q)s "%(f)s" "%(a)s" %(s)s %(B)s %(D)s
         %(p)s'
 
-  dbEnv: &dbEnv
-    PGSCHEMA:
-      type: configMap
-      name: env
-      key: PGSCHEMA
-    PGSCHEMA_STATIC:
-      type: configMap
-      name: env
-      key: PGSCHEMA_STATIC
+  pgOptionsEnv: &pgOptionsEnv
+    POSTGRESQL_STATEMENT_TIMEOUT:
+      value: '30000' # milliseconds
     PGOPTIONS:
-      type: configMap
-      name: env
-      key: PGOPTIONS
+      value: -c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)
+
+  dbEnv: &dbEnv
+    <<: *pgOptionsEnv
     PGSSLMODE:
       value: require
     PGHOST:
@@ -105,22 +95,38 @@ shared:
       name: database
       key: password
 
-  azure-blob-env: &azure-blob-env
+  azureBlobEnv: &azureBlobEnv
     AZURE_STORAGE_ACCOUNT:
       type: secret
       name: gmf-blob-storage
       key: storageAccountName
 
-  configEnv: &configEnv
-    <<: [*dbEnv, *azure-blob-env]
+  sentryEnv: &sentryEnv
+    SENTRY_HOSTNAME:
+      value: o330647.ingest.sentry.io
+    SENTRY_URL:
+      value: https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/
+
+  internalUrlEnv: &internalUrlEnv
+    RELEASE_NAME: &RELEASE_NAME
+      type: configMap
+      name: env
+      key: RELEASE_NAME
     TILECLOUDCHAIN_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: TILECLOUDCHAIN_INTERNAL_URL
+      value: http://$(RELEASE_NAME)-tilecloudchain/
+      order: 1
     GEOPORTAL_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: GEOPORTAL_INTERNAL_URL
+      value: http://$(RELEASE_NAME)-geoportal/
+      order: 1
+    MAPSERVER_URL:
+      value: http://$(RELEASE_NAME)-mapserver/
+      order: 1
+    QGISSERVER_URL:
+      value: http://$(RELEASE_NAME)-qgisserver/
+      order: 1
+
+  configEnv: &configEnv
+    <<: [*dbEnv, *azureBlobEnv, *internalUrlEnv, *sentryEnv]
     VISIBLE_WEB_HOST:
       type: configMap
       name: ingress
@@ -128,33 +134,39 @@ shared:
     VISIBLE_WEB_PROTOCOL:
       value: https
     VISIBLE_ENTRY_POINT:
-      type: configMap
-      name: env
-      key: VISIBLE_ENTRY_POINT
+      value: /
     MAPSERVER_DATA_SUBSELECT:
-      type: configMap
-      name: env
-      key: MAPSERVER_DATA_SUBSELECT
+      value: >
+        SELECT ST_Collect(ra.area)
+        FROM $(PGSCHEMA).restrictionarea AS ra,
+        $(PGSCHEMA).role_restrictionarea AS rra,
+        $(PGSCHEMA).layer_restrictionarea AS lra,
+        $(PGSCHEMA).treeitem AS la
+        WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id
+        AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
+      order: 1
     MAPSERVER_DATA_NOAREA_SUBSELECT:
-      type: configMap
-      name: env
-      key: MAPSERVER_DATA_NOAREA_SUBSELECT
+      value: >
+        SELECT rra.role_id
+        FROM $(PGSCHEMA).restrictionarea AS ra,
+        $(PGSCHEMA).role_restrictionarea AS rra,
+        $(PGSCHEMA).layer_restrictionarea AS lra,
+        $(PGSCHEMA).treeitem AS la
+        WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id
+        AND lra.layer_id = la.id AND la.name =
+      order: 1
     MAPSERVER_JOIN_TABLES:
-      type: configMap
-      name: env
-      key: MAPSERVER_JOIN_TABLES
+      value: >
+        $(PGSCHEMA).restrictionarea AS ra,
+        $(PGSCHEMA).role_restrictionarea AS rra,
+        $(PGSCHEMA).layer_restrictionarea AS lra,
+        $(PGSCHEMA).treeitem AS la
+      order: 1
     MAPSERVER_JOIN_WHERE:
-      type: configMap
-      name: env
-      key: MAPSERVER_JOIN_WHERE
-    MAPSERVER_URL:
-      type: configMap
-      name: env
-      key: MAPSERVER_URL
-    QGISSERVER_URL:
-      type: configMap
-      name: env
-      key: QGISSERVER_URL
+      value: >
+        rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND
+        lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
+      order: 1
     BASICAUTH:
       value: 'false'
     SRID:
@@ -167,9 +179,6 @@ shared:
       value: '25'
 
 geomapfish:
-  redis:
-    host: redis
-
   annotations:
     reloader.stakater.com/auto: 'true'
   podAnnotations:
@@ -209,14 +218,14 @@ geomapfish:
         memory: 64Mi
 
   env: &geoportal-env
-    <<: [*configEnv, *c2cwsgiutilsEnv]
+    <<: [*configEnv, *c2cwsgiutilsEnv, *internalUrlEnv]
     RASTER_BASE_PATH:
       value: /vsiaz/$(AZURE_CONTAINER_NAME)
       order: 1
     SENTRY_CLIENT_RELEASE:
       type: configMap
       name: env
-      key: GEOPORTAL_CLIENT_RELEASE
+      key: GEOPORTAL_IMAGE_TAG
     SENTRY_TAG_SERVICE:
       value: geoportal
     SQLALCHEMY_POOL_RECYCLE:
@@ -237,22 +246,6 @@ geomapfish:
       value: '0.1'
     C2C_DB_MAINTENANCE_VIEW_ENABLED:
       value: '1'
-    TILECLOUDCHAIN_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: TILECLOUDCHAIN_INTERNAL_URL
-    GEOPORTAL_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: GEOPORTAL_INTERNAL_URL
-    MAPSERVER_URL:
-      type: configMap
-      name: env
-      key: MAPSERVER_URL
-    QGISSERVER_URL:
-      type: configMap
-      name: env
-      key: QGISSERVER_URL
     AUTHTKT_SECRET:
       type: secret
       name: secrets
@@ -270,7 +263,7 @@ geomapfish:
       SENTRY_CLIENT_RELEASE:
         type: configMap
         name: env
-        key: ALEMBIC_CLIENT_RELEASE
+        key: ALEMBIC_IMAGE_TAG
       SENTRY_TAG_SERVICE:
         value: alembic
 
@@ -319,10 +312,7 @@ mapserver:
   args: [/usr/local/bin/start-server]
 
   env:
-    PGOPTIONS:
-      type: configMap
-      name: env
-      key: PGOPTIONS
+    <<: *pgOptionsEnv
     MAX_PROCESSES:
       value: '4'
     MAPSERVER_CATCH_SEGV:
@@ -384,15 +374,15 @@ qgisserver:
     aadpodidbinding: gmf
 
   env:
-    <<: [*redisEnv, *azure-blob-env]
+    <<: [*redisEnv, *azureBlobEnv]
+    RELEASE_NAME: *RELEASE_NAME
     MAX_PROCESSES:
       value: '4'
     MAX_REQUESTS_PER_PROCESS:
       value: '500'
     GEOMAPFISH_ACCESSCONTROL_BASE_URL:
-      type: configMap
-      name: env
-      key: QGISSERVER_URL
+      value: http://$(RELEASE_NAME)-qgisserver/
+      order: 1
     FCGID_IO_TIMEOUT:
       value: '120'
     CPL_VSIL_CURL_USE_CACHE:

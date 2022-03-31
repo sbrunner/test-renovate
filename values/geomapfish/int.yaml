@@ -4,15 +4,14 @@ geomapfish:
 
   configUrl: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/config/
 
-  geoportal:
-    env:
-      SQLALCHEMY_POOL_SIZE:
-        value: '2'
-      SQLALCHEMY_MAX_OVERFLOW:
-        value: '4'
-      PRINT_URL:
-        value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
-        order: 1
+  env:
+    SQLALCHEMY_POOL_SIZE:
+      value: '2'
+    SQLALCHEMY_MAX_OVERFLOW:
+      value: '4'
+    PRINT_URL:
+      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/$(PRINT_APP)/
+      order: 1
 
   mutualize:
     tccService: mutualize-int-tcc.gs-mutualize.svc.cluster.local

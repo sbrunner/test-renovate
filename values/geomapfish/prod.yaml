@@ -4,21 +4,17 @@ geomapfish:
 
   configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
 
-  geoportal:
-    replicaCount: 2
-    env:
-      PRINT_URL:
-        value: https://geoservices.camptocamp.com/print/$(PRINT_APP)/
-        order: 1
-
-  mapserver:
-    replicaCount: 2
-
-  qgisserver:
-    replicaCount: 2
-
-  tilecloudchain:
-    replicaCount: 2
-
   mutualize:
     tccService: mutualize-prod-tcc.gs-mutualize.svc.cluster.local
+
+  replicaCount: 2
+  env:
+    PRINT_URL:
+      value: https://geoservices.camptocamp.com/print/$(PRINT_APP)/
+      order: 1
+
+mapserver:
+  replicaCount: 2
+
+qgisserver:
+  replicaCount: 2

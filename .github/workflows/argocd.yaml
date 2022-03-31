@@ -26,5 +26,5 @@ jobs:
         id: 'diff'
         run: |
           argocd app list -ojson | jq -r ".[] | select(.spec.source.repoURL == \"git@github.com:$GITHUB_REPOSITORY.git\")|(.metadata.name)" | while read appname; do
-            argocd app diff "$appname" --loglevel warn --revision "${{github.head_ref}}" || true
+            argocd app diff --exit-code=false "$appname" --loglevel warn --revision "${{github.head_ref}}"
           done

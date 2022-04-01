@@ -5,6 +5,7 @@ on:
   workflow_run:
     workflows:
       - Continuous integration
+      - ArgoCD
     types:
       - completed
 jobs:

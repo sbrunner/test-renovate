@@ -42,7 +42,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish_print
       tag: &print-tag latest
-      sha: b8135c66f60a827b58de52f532e510b574d3a8a997934224c660359945c19827
+      sha: 2d3681c94d1f1b471d58dce060597ed545ebc569825dfb671d6c1a3f49be9f1d
 
     env:
       SENTRY_RELEASE:
@@ -82,7 +82,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish-print-logs
       tag: latest
-      sha: f7c48b7c7ddb7e34c011d2f3552cb4148aa575b02fb1fe09f000cc66fbbf4573
+      sha: 1048f728a5e9f584227b732d75b005a17065e4e3fbb9a69e2e801cb784f2f029
 
     env:
       REDIS_DB:
@@ -102,7 +102,7 @@ mutualize:
     image:
       repository: camptocamp/tilecloud-chain
       tag: latest
-      sha: df4ff345d5af15287f4bb7381d807141e16029d764428cc649f80fa9783d3c6d
+      sha: ff51f7d379a7bfff72416a2208e55135f0982e9ac07a13b4f6121dbd6065cdf6
 
     env:
       REDIS_DB:

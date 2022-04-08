@@ -5,10 +5,7 @@
   regexManagers: [
     {
       fileMatch: ['^download-urls.yaml$'],
-      matchStrings: [
-        '.*: https://github.com/(?<depName>.*?)/releases/download/v(?<currentValue>.*?)/chart-releaser_(?<currentValue>.*?)_linux_amd64.tar.gz',
-      ],
-      depTypeTemplate: 'github-releases',
+      matchStrings: ['(?<depName>.*?): (?<currentValue>.*?) # (?<depType>.*?)'],
     },
   ],
   packageRules: [

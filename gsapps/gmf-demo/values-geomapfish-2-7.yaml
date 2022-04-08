@@ -51,7 +51,7 @@ geomapfish:
     WMTS_URL:
       value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
     AUTHTKT_SAMESITE:
-      Value: None
+      Value: 'None'
     SMTP_PASSWORD:
       type: secret
       name: secrets
@@ -188,8 +188,6 @@ custom-feedback:
           key: sqlalchemyUrl
         PGSCHEMA:
           value: main_2_7
-        AUTHTKT_SAMESITE:
-          value: None
       ports:
         - name: http
           protocol: TCP

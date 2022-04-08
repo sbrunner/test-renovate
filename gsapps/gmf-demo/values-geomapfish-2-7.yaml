@@ -189,7 +189,7 @@ custom-feedback:
         PGSCHEMA:
           value: main_2_7
         AUTHTKT_SAMESITE:
-          value: None
+          value: 'None'
       ports:
         - name: http
           protocol: TCP

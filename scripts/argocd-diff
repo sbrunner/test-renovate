@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import os
+import subprocess
+
+
+def main() -> None:
+    """
+    Display application diff for GitHub.
+    """
+
+    parser = argparse.ArgumentParser(description="Display application diff for GitHub.")
+    parser.add_argument("--revision", help="Diff on the revision")
+    args = parser.parse_args()
+
+    app_list = json.loads(
+        subprocess.run(
+            ["argocd", "app", "list", "--output=json"], stdout=subprocess.PIPE, check=True
+        ).stdout.decode("utf-8")
+    )
+    apps = {
+        app["metadata"]["name"]
+        for app in app_list
+        if app["spec"]["source"]["repoURL"] == f"git@github.com:{os.environ['GITHUB_REPOSITORY']}.git"
+    }
+
+    for app in apps:
+        app_diff = subprocess.run(
+            [
+                "argocd",
+                "app",
+                "diff",
+                "--exit-code=false",
+                app,
+                "--loglevel=warn",
+                f"--revision={args.revision}",
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout.decode()
+        if app_diff:
+            print(f"::group::Diff on application {app}")
+            print(app_diff)
+            print("::endgroup::")
+        else:
+            print(f"No diff on application {app}")
+
+
+if __name__ == "__main__":
+    main()

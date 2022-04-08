@@ -65,7 +65,7 @@ geomapfish:
     image:
       repository: camptocamp/geomapfishdemo-config
       tag: prod-2-7
-      sha: 8365cbdf620ba83180d8b44b0c4af77754084f2a5caf26ab6e242817efe2941d
+      sha: b0d29d597250eaa840703b1a50bc616f86ce19f8cb47d3e608985a1f209f78a7
 
   tools:
     enabled: true
@@ -168,7 +168,7 @@ custom-feedback:
       image:
         repository: camptocamp/geomapfishdemo-custom
         tag: prod-2-7
-        sha: 7b9c36894b1b5c086b1679fc9b523eb37d05327c94aa0d81efc17f7063c7780c
+        sha: 7a4b97edb4f2c55ef31a91730eebd657def132db843a30e8b0a3af76002fe939
 
       env:
         GUNICORN_CMD_ARGS:
@@ -189,7 +189,7 @@ custom-feedback:
         PGSCHEMA:
           value: main_2_7
         AUTHTKT_SAMESITE:
-          value: 'None'
+          value: None
       ports:
         - name: http
           protocol: TCP

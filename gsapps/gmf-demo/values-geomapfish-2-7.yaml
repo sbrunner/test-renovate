@@ -51,7 +51,7 @@ geomapfish:
     WMTS_URL:
       value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
     AUTHTKT_SAMESITE:
-      Value: 'None'
+      Value: None
     SMTP_PASSWORD:
       type: secret
       name: secrets

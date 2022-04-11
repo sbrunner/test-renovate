@@ -1,9 +1,11 @@
 extends:
-- openlayers
+  - eslint:recommended
 env:
-    jquery: true
-    jasmine: true
+  es6: true
+  jquery: true
+  jasmine: true
 parserOptions:
+  sourceType: module
   ecmaVersion: 2017
 rules:
   no-console: 0

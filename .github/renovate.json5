@@ -1,5 +1,6 @@
 {
-  extends: ['config:base', 'schedule:earlyMondays'],
+  extends: ['config:base'],
+  baseBranches: ['test-renovate-c2cciutils', '2.4'],  
   dependencyDashboardApproval: true,
   lockFileMaintenance: { enabled: true },
   regexManagers: [

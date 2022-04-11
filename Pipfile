@@ -13,7 +13,7 @@ EditorConfig = "==0.12.3"
 google-api-python-client = "==2.43.0"
 google-auth-httplib2 = "==0.1.0"
 google-auth-oauthlib = "==0.5.1"
-"ruamel.yaml" = "==0.17.4"
+"ruamel.yaml" = "==0.17.21"
 jsonschema = "==4.4.0"
 jsonschema-gentypes = "==1.0.0"
 node-vm2 = "==0.4.4"
@@ -28,9 +28,9 @@ codespell = "==2.1.0"
 
 [dev-packages]
 prospector = {version = "==1.7.7", extras = ["with_bandit", "with_mypy"]}
-types-requests = "==2.27.12"
-types-pyyaml = "==6.0.4"
-types-setuptools = "==57.4.10"
+types-requests = "==2.27.16"
+types-pyyaml = "==6.0.5"
+types-setuptools = "==57.4.12"
 types-markdown = "==3.3.12"
 
 [requires]

@@ -10,7 +10,7 @@ shared:
       value: '26379'
     C2C_REDIS_DB:
       value: $(REDIS_DB)
-      count: 1
+      order: 1
     C2C_BROADCAST_PREFIX:
       value: broadcast_geoportal_$(REDIS_DB)_
       order: 1

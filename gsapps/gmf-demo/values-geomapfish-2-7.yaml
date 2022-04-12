@@ -123,7 +123,8 @@ mapserver:
   config:
     <<: *config
     # Specific to demo
-    env: [*osmDbConnectionEnv, *dbConnectionEnv, *sentryEnv]
+    env:
+      <<: [*osmDbConnectionEnv, *dbConnectionEnv, *sentryEnv]
 
 qgisserver:
   env:

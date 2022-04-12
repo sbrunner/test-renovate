@@ -61,6 +61,7 @@ shared:
       value: '30000' # milliseconds
     PGOPTIONS:
       value: -c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)
+      order: 1
 
   dbEnv: &dbEnv
     <<: *pgOptionsEnv

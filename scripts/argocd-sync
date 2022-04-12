@@ -48,7 +48,7 @@ def main() -> None:
     print()
 
     if not args.dry_run:
-        subprocess.run(["argocd", "app", "sync", "--async"] + sync_apps, check=True)
+        subprocess.run(["argocd", "app", "sync", "--async"] + list(sync_apps), check=True)
 
 
 if __name__ == "__main__":

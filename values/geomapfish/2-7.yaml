@@ -106,7 +106,7 @@ shared:
     SENTRY_HOSTNAME:
       value: o330647.ingest.sentry.io
     SENTRY_URL:
-      value: https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/
+      value: https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)
       order: 1
 
   internalUrlEnv: &internalUrlEnv

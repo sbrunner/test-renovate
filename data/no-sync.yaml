@@ -1,0 +1,4 @@
+# List of applications regular expression or applications that will not be synced
+# on commit on the master branch
+apps_re:
+  - gs-mutualize-mutualize-.*

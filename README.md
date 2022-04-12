@@ -1,5 +1,10 @@
 # argocd-gs-platform-ch-development-apps
 
+## ArgoCD application sync
+
+By default, the application will be synced on commit on master. If you don't want that you can add
+your application in the `data/no-sync.yaml` file.
+
 ## The images tags
 
 In helm-common we use the `sha` if it exists, otherwise the `tag`.

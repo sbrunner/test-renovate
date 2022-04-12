@@ -69,7 +69,7 @@ mutualize:
       env:
         <<: *config-env-base
         MUTUALIZED_PRINT_URL:
-          value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/
+          value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/
       resources:
         requests:
           memory: 38Mi

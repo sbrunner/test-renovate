@@ -7,7 +7,7 @@ geomapfish:
   replicaCount: 2
   env:
     PRINT_URL:
-      value: https://geoservices.camptocamp.com/print/$(PRINT_APP)/
+      value: https://geoservices.camptocamp.com/print/print/$(PRINT_APP)/
       order: 1
     REDIS_DB: &redis_db
       value: '2'

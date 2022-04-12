@@ -6,7 +6,13 @@ global:
     ingress: geomapfish-prod-2-7-ingress
 
 shared:
-  osm-db-connexion: &osm-db-connexion
+  dbConnectionEnv: &dbConnectionEnv
+    PGSCHEMA:
+      value: main_2_7
+    PGSCHEMA_STATIC:
+      value: static_2_7
+
+  osmDbConnectionEnv: &osmDbConnectionEnv
     OSM_PGHOST:
       type: secret
       name: database-osm
@@ -36,9 +42,15 @@ shared:
       name: database-osm
       key: password
 
+  sentryEnv: &sentryEnv
+    SENTRY_KEY:
+      value: 8dfa6c72fcad48c487c6a89b22ce581b
+    SENTRY_PROJECT:
+      value: '1851011'
+
 geomapfish:
   env:
-    <<: *osm-db-connexion
+    <<: [*osmDbConnectionEnv, *dbConnectionEnv, *sentryEnv]
     AZURE_CONTAINER_NAME:
       value: balanced-woodcock
     PRINT_APP:
@@ -60,8 +72,11 @@ geomapfish:
       type: secret
       name: secrets
       key: SMTP_USER
+    REDIS_DB: &redis_db
+      value: '1'
 
   config: &config
+    env: [*dbConnectionEnv, *sentryEnv, *sentryEnv]
     image:
       repository: camptocamp/geomapfishdemo-config
       tag: prod-2-7
@@ -69,14 +84,12 @@ geomapfish:
 
   tools:
     enabled: true
+    env: *dbConnectionEnv
 
-  postgresql:
-    schema: main_2_7
-    staticSchema: static_2_7
-
-  sentry:
-    key: 8dfa6c72fcad48c487c6a89b22ce581b
-    project: 1851011
+  alembic:
+    env:
+      <<: [*dbConnectionEnv, *sentryEnv]
+      REDIS_DB: *redis_db
 
   mutualize:
     repository: camptocamp/demo_geomapfish
@@ -109,12 +122,13 @@ mapserver:
   config:
     <<: *config
     # Specific to demo
-    env: *osm-db-connexion
+    env: [*osmDbConnectionEnv, *dbConnectionEnv, *sentryEnv]
 
 qgisserver:
   env:
     QGIS_SERVER_LANDING_PAGE_PREFIX:
       value: /mapserv_proxy/qgis
+    REDIS_DB: *redis_db
   readinessProbe:
     httpGet:
       path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
@@ -146,6 +160,10 @@ ingress:
 fts-cron:
   initContainers:
     config: *config
+  containers:
+    fts-cron:
+      env:
+        REDIS_DB: *redis_db
 
 # Specific to demo
 custom-feedback:

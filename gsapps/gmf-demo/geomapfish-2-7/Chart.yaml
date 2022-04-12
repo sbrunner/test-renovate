@@ -9,7 +9,7 @@ dependencies:
     version: 0.2.1
   - name: ingress
     repository: https://camptocamp.github.io/helm-ingress/
-    version: 0.2.3
+    version: 0.2.4
   - name: apache
     repository: https://camptocamp.github.io/helm-apache/
     alias: mapserver

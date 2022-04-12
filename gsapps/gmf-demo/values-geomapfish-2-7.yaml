@@ -57,7 +57,7 @@ geomapfish:
       value: zen-carson-2-7
     # Should be removed on non demo project
     PRINT_URL:
-      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/$(PRINT_APP)/
+      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/print/$(PRINT_APP)/
       order: 1
     # Specific to demo
     WMTS_URL:
@@ -76,7 +76,8 @@ geomapfish:
       value: '1'
 
   config: &config
-    env: [*dbConnectionEnv, *sentryEnv, *sentryEnv]
+    env:
+      <<: [*dbConnectionEnv, *sentryEnv]
     image:
       repository: camptocamp/geomapfishdemo-config
       tag: prod-2-7

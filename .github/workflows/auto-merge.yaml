@@ -19,3 +19,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_LOGIN: c2c-bot-gis-ci
+          MERGE_METHOD: MERGE

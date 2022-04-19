@@ -13,7 +13,7 @@ geomapfish:
       repository: camptocamp/geomapfish-tools
       tag: 2.7
       atleastOldDays: 20
-      sha: f4dfa4aaa5a2f1f0798d776db926756419a24ccd2c7149abf27e778c4f6d4ceb
+      sha: f8279f33b9c444068b4f5c31473d87e12c1053f6dcf48b05a6ed7235634c59a1
 
 mapserver:
   image:

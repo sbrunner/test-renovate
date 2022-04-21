@@ -13,14 +13,14 @@ geomapfish:
       repository: camptocamp/geomapfish-tools
       tag: 2.7
       atleastOldDays: 20
-      sha: 18de0e8adda4d8894c014edf137f0981122a021242aaf5a641335d5839313322
+      sha: 0f44c87619b05be9e6874e158b23f73bb01ec906fa5c334901e78c71b4c5ed08
 
 mapserver:
   image:
     repository: camptocamp/mapserver
     tag: 7.6-20-04
     atleastOldDays: 20
-    sha: 503e79ad3d94bab87a1b9307e5bf35f9c179c6e475de36982ab9a6838217152d
+    sha: fdd71e9da6263d0d5c677cc4ccdc488a7a9d794e142b4faf890707f096725dd5
 
   apacheExporter: &apacheExporter
     image:

@@ -17,7 +17,7 @@ mapserver:
   image:
     repository: camptocamp/mapserver
     tag: 7.6-20-04
-    sha: 60d8525b979b2d1263c661cabf099aae7d666c6df445e7266dff81337d2b6595
+    sha: 783fc79940d9d18220d7ae8c679e4cf8a70983f7ba59da825fd73edbea332463
 
   apacheExporter: &apacheExporter
     image:

@@ -23,7 +23,7 @@ mutualize:
       repository: camptocamp/shared_config_manager
       tag: '3.2'
       atleastOldDays: 20
-      sha: 9c31de7e27d9e8eef1827063ec3b3597684916459539d473f703602becee806a
+      sha: 321b802c18a786f31b0efbc09f4e82d4a999b76e48f6972574e16084fc24e8c1
 
     env:
       <<: *config-env-base
@@ -44,7 +44,7 @@ mutualize:
       repository: camptocamp/mapfish_print
       tag: &print-tag '3.29'
       atleastOldDays: 20
-      sha: ffdc9b8e1a7d2681bee9d99c2622d86313b1358c1959ef81d732e39663426181
+      sha: 0d6f773ce085a164ed12e8d892534a6e5184f3faa221a405a102bc4ba2ab2f44
 
     env:
       SENTRY_RELEASE:

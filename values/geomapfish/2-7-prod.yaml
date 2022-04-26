@@ -20,7 +20,7 @@ mapserver:
     repository: camptocamp/mapserver
     tag: 7.6-20-04
     atleastOldDays: 20
-    sha: 2d32f87869fae918f5810a4926977ad91b471bea5f591a02abfdc6ca8976bda6
+    sha: 77e9ea79175d0111b062dc353511de6fc9689eee6600e83871e4bd85944b0a37
 
   apacheExporter: &apacheExporter
     image:
@@ -34,7 +34,7 @@ qgisserver:
     repository: camptocamp/geomapfish-qgisserver
     tag: gmf2.7-qgis3.22
     atleastOldDays: 20
-    sha: 11d1de5cd91983b644e67ee577e24d68e913ebaa68269d59d339276acca49076
+    sha: 88ce4ee97ae8d67642fe34517c005574420d98a900232b04688ca2500a44d684
 
   apacheExporter: *apacheExporter
 

@@ -29,7 +29,7 @@ qgisserver:
   image:
     repository: camptocamp/geomapfish-qgisserver
     tag: gmf2.7-qgis3.22
-    sha: 7eb492bbe42a2c3579cef97f40f0a6e093927f09cd8b848a15c3da3cbb7d8032
+    sha: d5c3a420c06f1fbb980941b7ebe92cc1e2cdbbe9953490686d7875c68196ad40
 
   apacheExporter: *apacheExporter
 

@@ -17,6 +17,6 @@ jobs:
     steps:
       - uses: ridedott/merge-me-action@master
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
           GITHUB_LOGIN: c2c-bot-gis-ci
           MERGE_METHOD: MERGE

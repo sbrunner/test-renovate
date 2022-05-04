@@ -306,7 +306,7 @@ mutualize:
 
           <servlet-mapping>
               <servlet-name>mapfish-print</servlet-name>
-              <url-pattern>/print/*</url-pattern>
+              <url-pattern>/print/print/*</url-pattern>
           </servlet-mapping>
       </web-app>
 

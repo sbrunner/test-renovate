@@ -10,7 +10,7 @@ geomapfish:
     SQLALCHEMY_MAX_OVERFLOW:
       value: '4'
     PRINT_URL:
-      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/$(PRINT_APP)/
+      value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/$(PRINT_APP)
       order: 1
     REDIS_DB: &redis_db
       value: '1'

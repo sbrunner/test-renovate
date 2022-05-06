@@ -118,8 +118,7 @@ mutualize:
         memory: 150Mi
         cpu: 15m
       limits:
-        # memory: 300Mi
-        memory: 400Mi
+        memory: 300Mi
 
   tilecloudchainSlave:
     <<: *tilecloudchain
@@ -129,7 +128,8 @@ mutualize:
         memory: 140Mi
         cpu: 3.1m
       limits:
-        memory: 210Mi
+        # memory: 210Mi
+        memory: 250Mi
 
 ingress:
   hostsGroups:

@@ -331,7 +331,8 @@ mapserver:
 
   resources:
     requests:
-      memory: 110.5Mi
+      #memory: 110.5Mi
+      memory: 200Mi
       cpu: 4m
     limits:
       memory: 560Mi

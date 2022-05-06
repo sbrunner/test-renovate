@@ -5,3 +5,4 @@ checks:
     codeql.yaml: false
     dependabot-auto-merge.yaml: false
     backport.yaml: false
+  dependabot_config: false

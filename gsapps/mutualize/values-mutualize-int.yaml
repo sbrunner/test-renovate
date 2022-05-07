@@ -17,6 +17,8 @@ config-env-base: &config-env-base
     value: '4'
 
 mutualize:
+  environment: int
+
   config:
     replicaCount: 1
     image: &config-image

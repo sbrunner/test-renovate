@@ -42,7 +42,7 @@ monitoring:
     image:
       repository: prom/statsd-exporter
       tag: latest
-      sha: 8be6604709613409be493520d13a58686ce0b9d69f9b23476195a37379d2df9e
+      sha: e8133fd47e57ce14532efc1b2384af1697a6ccaf953074da6e35d57bebd8cfe9
 
     annotations:
       reloader.stakater.com/auto: 'true'

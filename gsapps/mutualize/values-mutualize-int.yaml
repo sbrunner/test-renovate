@@ -102,7 +102,7 @@ mutualize:
     image:
       repository: camptocamp/tilecloud-chain
       tag: latest
-      sha: d3dcb58c3cf16dcbcd2d8767086e91617dd377ecadea2c1f51b5a7f9dc3f26c8
+      sha: 947c9fb3536911a7fc00fe66d3de5f402a2b378a30d9a17211c30d398cb1610b
 
     env:
       REDIS_DB:

@@ -2,6 +2,7 @@ geomapfish:
   configUrl: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/config/
 
   mutualize:
+    environment: int
     tccService: mutualize-int-tcc.gs-mutualize.svc.cluster.local
 
   env:

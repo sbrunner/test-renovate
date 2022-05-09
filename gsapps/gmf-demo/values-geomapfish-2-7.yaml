@@ -93,6 +93,7 @@ geomapfish:
       REDIS_DB: *redis_db
 
   mutualize:
+    environment: int
     repository: camptocamp/demo_geomapfish
     branch: prod-2-7
     # Should be removed on non demo project

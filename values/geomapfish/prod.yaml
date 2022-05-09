@@ -2,6 +2,7 @@ geomapfish:
   configUrl: https://mutualize.apps.gs-ch-dev.camptocamp.com/config/
 
   mutualize:
+    environment: prod
     tccService: mutualize-prod-tcc.gs-mutualize.svc.cluster.local
 
   replicaCount: 2

@@ -6,7 +6,7 @@ version: 1.0.0
 dependencies:
   - name: mutualize
     repository: https://camptocamp.github.io/helm-mutualize/
-    version: 0.2.1
+    version: 0.2.2
   - name: ingress
     repository: https://camptocamp.github.io/helm-ingress/
     version: 0.2.4

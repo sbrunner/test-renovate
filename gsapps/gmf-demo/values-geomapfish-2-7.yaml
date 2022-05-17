@@ -81,7 +81,7 @@ geomapfish:
     image:
       repository: camptocamp/geomapfishdemo-config
       tag: prod-2-7
-      sha: 66e5164b0be81304f4f523ea71e7387a372f12b314b8735d2dfb6053fe56cbd7
+      sha: 193ab56fa8addd99872571bdd2889f52fcacdb74e7a22a57d152b98c668ab26e
 
   tools:
     enabled: true
@@ -189,7 +189,7 @@ custom-feedback:
       image:
         repository: camptocamp/geomapfishdemo-custom
         tag: prod-2-7
-        sha: d5595ca8ff210634390ea936593490e3a979b3a7f4b029abf3e90916a8433d25
+        sha: 248bfff2646656a67bd063b7dc65aff0cfd052f36acab62b40bc3a57ce18aae1
 
       env:
         GUNICORN_CMD_ARGS:

@@ -461,6 +461,9 @@ mutualize:
         SENTRY_TAG_SERVICE:
           value: config-tilecloudchain-slave
 
+  redirect:
+    enabled: true
+
   additionalConfigs:
     examples:
       repository: mapfish/mapfish-print

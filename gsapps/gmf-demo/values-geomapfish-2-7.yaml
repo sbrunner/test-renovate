@@ -123,7 +123,7 @@ geomapfish:
 mapserver:
   env:
     IO_TIMEOUT:
-      value: '180'
+      value: '210'
   config:
     <<: *config
     # Specific to demo

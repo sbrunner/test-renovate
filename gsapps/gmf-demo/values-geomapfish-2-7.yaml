@@ -126,6 +126,8 @@ mapserver:
     # Specific to demo
     env:
       <<: [*osmDbConnectionEnv, *dbConnectionEnv, *sentryEnv]
+      IO_TIMEOUT:
+        value: '80'
 
 qgisserver:
   env:

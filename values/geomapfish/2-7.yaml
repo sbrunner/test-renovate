@@ -335,7 +335,7 @@ mapserver:
       memory: 200Mi
       cpu: 4m
     limits:
-      memory: 4Gi
+      memory: 3Gi
 
   readinessProbe:
     httpGet:

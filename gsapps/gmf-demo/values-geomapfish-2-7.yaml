@@ -166,6 +166,7 @@ fts-cron:
   containers:
     fts-cron:
       env:
+        <<: *sentryEnv
         REDIS_DB: *redis_db
 
 # Specific to demo

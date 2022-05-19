@@ -119,6 +119,9 @@ geomapfish:
           VISIBLE_WEB_PROTOCOL: https
           VISIBLE_WEB_HOST: geomapfish-demo-2-7.camptocamp.com
           VISIBLE_ENTRY_POINT: /
+    redirect:
+      hosts:
+        - geomapfish-demo-2-7.camptocamp.com
 
 mapserver:
   env:

@@ -1,7 +1,7 @@
 geomapfish:
   image: &geoportal-image
     repository: camptocamp/geomapfishapp-geoportal
-    tag: 2.7
+    tag: '2.7'
     atleastOldDays: 20
     sha: fa551c61ed6dbccbc413320dcd12b5a5c70ab4abeb9e36eb93aaee732623c969
 
@@ -11,28 +11,28 @@ geomapfish:
   tools:
     image:
       repository: camptocamp/geomapfish-tools
-      tag: 2.7
+      tag: '2.7'
       atleastOldDays: 20
       sha: f2073d73f6d36e1bdc72e48831c0e366a0d93e792512f8f6766b7b99e40b7a9c
 
 mapserver:
   image:
     repository: camptocamp/mapserver
-    tag: 7.6-20-04
+    tag: 7.6-20-04 # camptocamp/mapserver
     atleastOldDays: 20
     sha: 640f93dcbd7e0ef14803afc284cc9886d03e9a29a26d6f3e51564c42e2862060
 
   apacheExporter: &apacheExporter
     image:
       repository: quay.io/lusitaniae/apache-exporter
-      tag: latest
+      tag: v0.11.0 # quay.io/lusitaniae/apache-exporter
       atleastOldDays: 20
       sha: 266abe2e6932edd5a420499cdab28e7e394aa4a05c175d630dde965cedc9203e
 
 qgisserver:
   image:
     repository: camptocamp/geomapfish-qgisserver
-    tag: gmf2.7-qgis3.22
+    tag: gmf2.7-qgis3.22 # camptocamp/geomapfish-qgisserver
     atleastOldDays: 20
     sha: 81b7c77dd2bda259c30f2cdaa44fb37cda2ac2bf2230691ccec9f35099f60aff
 

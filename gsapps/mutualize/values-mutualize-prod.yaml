@@ -25,7 +25,7 @@ mutualize:
       repository: camptocamp/shared_config_manager
       tag: '3.2'
       atleastOldDays: 20
-      sha: d2d3fd298cfbdf1f9d089a42f686314d6407a928aa9a4328a614ddf907758865
+      sha: 6f5843f69a55cab93ea54e885b63786057ac027e1a317590dfbcea63e5def8f0
 
     env:
       <<: *config-env-base
@@ -106,7 +106,7 @@ mutualize:
       repository: camptocamp/tilecloud-chain
       tag: '1.17'
       atleastOldDays: 20
-      sha: 8668ba490635898ed1f5dba794d8b8c18d65c7b734818fa639ec3a0575a5563d
+      sha: 773f0b879c326e7ba178c6d9c2becffe361bd84ab08ee32741ffaebc0945302b
 
     mainConfig:
       redis:

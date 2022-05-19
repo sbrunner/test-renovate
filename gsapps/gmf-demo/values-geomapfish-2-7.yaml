@@ -122,6 +122,7 @@ geomapfish:
     redirect:
       hosts:
         - geomapfish-demo-2-7.camptocamp.com
+        - localhost
 
 mapserver:
   env:

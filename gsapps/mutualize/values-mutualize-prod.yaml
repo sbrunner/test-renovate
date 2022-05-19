@@ -138,6 +138,12 @@ mutualize:
       limits:
         memory: 240Mi
 
+  redirect:
+    image:
+      repository: camptocamp/redirect
+      tag: 'latest' # camptocamp/redirect
+      atleastOldDays: 20
+
 ingress:
   hostsGroups:
     - name: main

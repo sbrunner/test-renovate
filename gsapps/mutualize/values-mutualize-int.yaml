@@ -133,6 +133,11 @@ mutualize:
         # memory: 210Mi
         memory: 250Mi
 
+  redirect:
+    image:
+      repository: camptocamp/redirect
+      tag: 'latest' # camptocamp/redirect
+
 ingress:
   hostsGroups:
     - name: test

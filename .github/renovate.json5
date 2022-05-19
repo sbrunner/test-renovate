@@ -24,7 +24,7 @@
     {
       fileMatch: ['.*\\.yaml$'],
       matchStrings: ["^ +tag: (&[0-9a-z-]+ )?'?(?<currentValue>.*)'? # (?<depName>.*)"],
-      datasource: 'dockerfile',
+      datasourceTemplate: 'docker',
     },
   ],
 }

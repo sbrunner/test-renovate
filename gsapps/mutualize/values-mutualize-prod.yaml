@@ -141,7 +141,7 @@ mutualize:
   redirect:
     image:
       repository: camptocamp/redirect
-      tag: 'latest' # camptocamp/redirect
+      tag: latest # camptocamp/redirect
       atleastOldDays: 20
 
 ingress:

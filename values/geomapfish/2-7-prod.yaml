@@ -18,7 +18,7 @@ geomapfish:
 mapserver:
   image:
     repository: camptocamp/mapserver
-    tag: 7.6-20-04 # camptocamp/mapserver
+    tag: 7.6-20-04
     atleastOldDays: 20
     sha: 640f93dcbd7e0ef14803afc284cc9886d03e9a29a26d6f3e51564c42e2862060
 
@@ -32,7 +32,7 @@ mapserver:
 qgisserver:
   image:
     repository: camptocamp/geomapfish-qgisserver
-    tag: gmf2.7-qgis3.22 # camptocamp/geomapfish-qgisserver
+    tag: gmf2.7-qgis3.22
     atleastOldDays: 20
     sha: 81b7c77dd2bda259c30f2cdaa44fb37cda2ac2bf2230691ccec9f35099f60aff
 

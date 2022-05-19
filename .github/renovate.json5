@@ -10,7 +10,7 @@
       dependencyDashboardApproval: true,
     },
     {
-      matchManagers: ['docker'],
+      matchManagers: ['regex'],
       dependencyDashboardApproval: true,
     },
   ],
@@ -24,7 +24,7 @@
     {
       fileMatch: ['.*\\.yaml$'],
       matchStrings: ["^ +tag: (&[0-9a-z-]+ )?'?(?<currentValue>.*)'? # (?<depName>.*)"],
-      datasourceTemplate: 'npm',
+      datasourceTemplate: 'docker',
     },
   ],
 }

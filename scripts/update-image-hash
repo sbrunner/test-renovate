@@ -33,7 +33,9 @@ def update_images_sha(yaml: Dict[str, Any], images_data: Dict[str, Dict[str, dat
                 at_least = datetime.now() - timedelta(days=value.get("atleastOldDays", 0))
                 shas = [
                     (sha, date)
-                    for sha, date in images_data[f"{value['repository']}:{value['tag']}"].items()
+                    for sha, date in images_data.setdefault(
+                        f"{value['repository']}:{value['tag']}", {}
+                    ).items()
                     if date <= at_least
                 ]
                 shas.sort(key=lambda x: x[1])

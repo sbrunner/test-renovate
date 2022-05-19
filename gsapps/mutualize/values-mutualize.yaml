@@ -463,6 +463,14 @@ mutualize:
 
   redirect:
     enabled: true
+    env:
+      VISIBLE_ENTRY_POINT:
+        value: /redirect/
+
+    # Fix default value
+    probes:
+      httpGet:
+        path: /redirect/c2c/health_check
 
   additionalConfigs:
     examples:
@@ -508,3 +516,6 @@ ingress:
     printLogs:
       path: /print/logs
       serviceName: logs
+    redirect:
+      path: /redirect
+      serviceName: redirect

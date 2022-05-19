@@ -138,6 +138,13 @@ mutualize:
       repository: camptocamp/redirect
       tag: latest # camptocamp/redirect
 
+    resources:
+      requests:
+        memory: 101.1Mi
+        cpu: 1.1m
+      limits:
+        memory: 202.2Mi
+
 ingress:
   hostsGroups:
     - name: test

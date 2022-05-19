@@ -64,6 +64,8 @@ geomapfish:
       value: https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/
     AUTHTKT_SAMESITE:
       value: None
+    BASICAUTH:
+      value: 'True'
     SMTP_PASSWORD:
       type: secret
       name: secrets

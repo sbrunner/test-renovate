@@ -22,14 +22,14 @@ mapserver:
   apacheExporter: &apacheExporter
     image:
       repository: quay.io/lusitaniae/apache-exporter
-      tag: v0.11.0 # quay.io/lusitaniae/apache-exporter
+      tag: v0.11.0
       sha: 266abe2e6932edd5a420499cdab28e7e394aa4a05c175d630dde965cedc9203e
 
 qgisserver:
   image:
     repository: camptocamp/geomapfish-qgisserver
     tag: gmf2.7-qgis3.22
-    sha: 83b536ab365867d8c235ea5138471155205d9d0d190953d5ce7e31c4a282304e
+    sha: db777849101d26633f7989e763f972b2dde94edaf29c9e8caaffae2b19d16874
 
   apacheExporter: *apacheExporter
 

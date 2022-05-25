@@ -18,6 +18,10 @@ dependencies:
     repository: https://camptocamp.github.io/helm-apache/
     alias: qgisserver
     version: 0.2.1
+  - name: apache
+    repository: https://camptocamp.github.io/helm-apache/
+    alias: tinyows
+    version: 0.2.1
   - name: custom-pod
     repository: https://camptocamp.github.io/helm-custom-pod/
     alias: custom-feedback

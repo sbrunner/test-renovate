@@ -126,6 +126,9 @@ shared:
     QGISSERVER_URL:
       value: http://$(RELEASE_NAME)-qgisserver/
       order: 1
+    TINYOWS_URL:
+      value: http://$(RELEASE_NAME)-tinyows/
+      order: 1
 
   configEnv: &configEnv
     <<: [*dbEnv, *azureBlobEnv, *internalUrlEnv, *sentryEnv]
@@ -458,6 +461,33 @@ qgisserver:
     folder: /etc/qgisserver
 
   apacheExporter: *apacheExporter
+
+tinyows:
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podAnnotations:
+    co.elastic.logs/enabled: 'true'
+  podLabels:
+    aadpodidbinding: gmf
+
+  readinessProbe:
+    httpGet:
+      path: /?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0
+
+  resources:
+    requests:
+      memory: 24Mi
+      cpu: 5m
+    limits:
+      memory: 64Mi
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
+
+  config:
+    <<: *config
+    folder: /etc/tinyows
 
 ingress:
   annotations:

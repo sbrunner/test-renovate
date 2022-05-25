@@ -150,6 +150,9 @@ qgisserver:
 
   config: *config
 
+tinyows:
+  config: *config
+
 ingress:
   hostsGroups:
     - name: main

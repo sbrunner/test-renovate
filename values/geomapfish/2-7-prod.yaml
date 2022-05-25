@@ -38,6 +38,14 @@ qgisserver:
 
   apacheExporter: *apacheExporter
 
+tinyows:
+  image:
+    repository: camptocamp/tinyows
+    tag: latest
+    atleastOldDays: 20
+
+  apacheExporter: *apacheExporter
+
 fts-cron:
   containers:
     fts-cron:

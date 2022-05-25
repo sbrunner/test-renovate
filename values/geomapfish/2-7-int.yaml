@@ -33,6 +33,13 @@ qgisserver:
 
   apacheExporter: *apacheExporter
 
+tinyows:
+  image:
+    repository: camptocamp/tinyows
+    tag: latest
+
+  apacheExporter: *apacheExporter
+
 fts-cron:
   containers:
     fts-cron:

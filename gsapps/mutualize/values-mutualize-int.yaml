@@ -103,12 +103,33 @@ mutualize:
   tilecloudchain: &tilecloudchain
     image:
       repository: camptocamp/tilecloud-chain
-      tag: '1.17'
-      sha: 7bd89d8f6ee89e4d9c986d4aa0cbd72bd7a6f707757e48a4759a42095dd71195
+      tag: 'master'
 
     env:
       REDIS_DB:
         value: '6'
+      C2C_AUTH_GITHUB_PROXY_URL:
+        value: https://mutualize-int.apps.gs-ch-dev.camptocamp.com/redirect
+      C2C_AUTH_GITHUB_CLIENT_ID:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_CLIENT_ID_INT
+      C2C_AUTH_GITHUB_CLIENT_SECRET:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_CLIENT_SECRET_INT
+      C2C_AUTH_GITHUB_SECRET:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_SECRET_INT
+      TILECLOUD_CHAIN_SESSION_SECRET:
+        type: secret
+        name: secrets
+        key: TILECLOUD_CHAIN_SESSION_SECRET_INT
+      TILECLOUD_CHAIN_SESSION_SALT:
+        type: secret
+        name: secrets
+        key: TILECLOUD_CHAIN_SESSION_SALT_INT
 
     annotations:
       reloader.stakater.com/auto: mutualize-int-env,mutualize-int,mutualize-int-tcc-main-config,gmf-blob-storage

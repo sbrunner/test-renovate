@@ -115,6 +115,28 @@ mutualize:
     env:
       REDIS_DB:
         value: '3'
+      C2C_AUTH_GITHUB_PROXY_URL:
+        value: https://geoservices.camptocamp.com/redirect
+      C2C_AUTH_GITHUB_CLIENT_ID:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_CLIENT_ID_PROD
+      C2C_AUTH_GITHUB_CLIENT_SECRET:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_CLIENT_SECRET_PROD
+      C2C_AUTH_GITHUB_SECRET:
+        type: secret
+        name: secrets
+        key: C2C_AUTH_GITHUB_SECRET_PROD
+      TILECLOUD_CHAIN_SESSION_SECRET:
+        type: secret
+        name: secrets
+        key: TILECLOUD_CHAIN_SESSION_SECRET_PROD
+      TILECLOUD_CHAIN_SESSION_SALT:
+        type: secret
+        name: secrets
+        key: TILECLOUD_CHAIN_SESSION_SALT_PROD
 
     annotations:
       reloader.stakater.com/auto: mutualize-prod-env,mutualize-prod,mutualize-prod-tcc-main-config,gmf-blob-storage

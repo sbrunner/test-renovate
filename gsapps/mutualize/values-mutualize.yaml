@@ -15,7 +15,7 @@ global:
 sentry-env-base: &sentry-env-base
   SENTRY_URL:
     value: https://0454083c8df943d0a256825b83b36e5e@o330647.ingest.sentry.io/1853817
-python-env-base: &python-env-base
+python-env-base-no-c2csecret: &python-env-base-no-c2csecret
   <<: *sentry-env-base
   LOG_TYPE:
     value: json
@@ -30,10 +30,6 @@ python-env-base: &python-env-base
   C2C_BROADCAST_PREFIX:
     value: broadcast_config_$(REDIS_DB)_
     order: 1
-  C2C_SECRET:
-    type: secret
-    name: secrets
-    key: C2C_SECRET
   C2C_REDIS_TIMEOUT:
     value: '10'
   C2C_REDIS_SENTINELS:
@@ -43,6 +39,12 @@ python-env-base: &python-env-base
   C2C_REDIS_DB:
     value: $(REDIS_DB)
     order: 1
+python-env-base: &python-env-base
+  <<: *python-env-base-no-c2csecret
+  C2C_SECRET:
+    type: secret
+    name: secrets
+    key: C2C_SECRET
 config-env-base: &config-env-base
   <<: *python-env-base
   SCM_ENV_PREFIXES:
@@ -397,7 +399,7 @@ mutualize:
       aadpodidbinding: gmf
 
     env: &tilecloudchain-env
-      <<: *python-env-base
+      <<: *python-env-base-no-c2csecret
       SENTRY_TAG_SERVICE:
         value: tilecloudchain
       SENTRY_CLIENT_RELEASE:
@@ -421,6 +423,12 @@ mutualize:
       AZURE_STORAGE_ACCOUNT_URL:
         value: https://$(AZURE_STORAGE_ACCOUNT_NAME).blob.core.windows.net/
         order: 1
+      C2C_AUTH_GITHUB_REPOSITORY:
+        value: camptocamp/argocd-gs-platform-ch-development-apps
+      C2C_AUTH_GITHUB_ACCESS_TYPE:
+        value: admin
+      C2C_USE_SESSION:
+        value: 'true'
 
     probes:
       httpGet:

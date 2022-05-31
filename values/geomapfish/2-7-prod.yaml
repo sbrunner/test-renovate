@@ -15,6 +15,9 @@ geomapfish:
       atleastOldDays: 20
       sha: af4911c8eb828a0ff8460dc0abcd04bf681713972e218e8e33e33f160fab9a27
 
+  mutualize:
+    configUrl: https://geoservices.camptocamp.com/config
+
 mapserver:
   image:
     repository: camptocamp/mapserver

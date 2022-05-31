@@ -6,7 +6,7 @@ version: 1.0.0
 dependencies:
   - name: geomapfish
     repository: https://camptocamp.github.io/helm-geomapfish/
-    version: 0.2.5
+    version: 0.2.6
   - name: ingress
     repository: https://camptocamp.github.io/helm-ingress/
     version: 0.2.5

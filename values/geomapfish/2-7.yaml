@@ -1,6 +1,7 @@
 global:
   image:
     pullPolicy: Always
+  revisionHistoryLimit: 1
 
 shared:
   redisEnv: &redisEnv

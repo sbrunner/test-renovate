@@ -185,9 +185,8 @@ mutualize:
     command:
       - bash
       - -c
-      - mkdir /usr/local/tomcat/webapps/ROOT/print;
-        (cd /usr/local/tomcat/webapps/ROOT/ && mv index.html favicon.ico mapfish_transparent.png print/);
-        exec /usr/local/tomcat/bin/docker-start-print;
+      - mkdir /usr/local/tomcat/webapps/ROOT/print; (cd /usr/local/tomcat/webapps/ROOT/
+        && mv index.html favicon.ico mapfish_transparent.png print/); exec /usr/local/tomcat/bin/docker-start-print;
     webXml: |
       <?xml version="1.0" encoding="UTF-8"?>
 

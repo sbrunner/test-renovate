@@ -85,7 +85,7 @@ mutualize:
       repository: camptocamp/mapfish-print-logs
       tag: '1.3'
       atleastOldDays: 20
-      sha: 388624722aef98de73afccef365e2dd84c22b308ded0c23bbdbf12cdea153398
+      sha: 1ef16a2ec271c7c8e69a725dabc3b8eddc4838fcdcdb208762e13104036f6f99
 
     env:
       REDIS_DB:
@@ -106,7 +106,7 @@ mutualize:
       repository: camptocamp/tilecloud-chain
       tag: '1.17'
       atleastOldDays: 20
-      sha: f30148affebb3f5cda77d6904d2ff35a97ccca301c4507bef80c5d81517c3bb2
+      sha: f5b0c8ecc39e47451deb09d39ba2426dd164fc4f06737a2ef2988e3d12e6d01f
 
     mainConfig:
       redis:

@@ -106,7 +106,7 @@ mutualize:
       repository: camptocamp/tilecloud-chain
       tag: '1.17'
       atleastOldDays: 20
-      sha: 9267ab86433f5bf68e4fa2f970de670cac8794484a3f0e312ff9dac614de7929
+      sha: bcc200370545096f96182bd3b15b9a837a475fa69f0d779c1d9f1ddec6a967ee
 
     mainConfig:
       redis:

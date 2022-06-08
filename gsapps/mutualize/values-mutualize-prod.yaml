@@ -46,7 +46,7 @@ mutualize:
       repository: camptocamp/mapfish_print
       tag: &print-tag '3.29' # camptocamp/mapfish_print
       atleastOldDays: 20
-      sha: f32af481e2477f6d64cd6122546eb013a8f7f52106e8d11949d1e345f9b17037
+      sha: f8627ed5201f26c072a13bcf3e083128915b0e8fbaad107e41db5899aec93a03
 
     env:
       SENTRY_RELEASE:

@@ -163,8 +163,9 @@ mutualize:
   redirect:
     image:
       repository: camptocamp/redirect
-      tag: latest # camptocamp/redirect
+      tag: latest
       atleastOldDays: 20
+      sha: d647f2347cf72d6bddc4628a52e6000278294aba817ce379a312088bdbb58d2a
 
     resources:
       requests:

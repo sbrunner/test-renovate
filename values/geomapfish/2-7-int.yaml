@@ -40,7 +40,7 @@ tinyows:
   image:
     repository: camptocamp/tinyows
     tag: latest
-    sha: 720aa2a62fffb11d0fb804829948e8fd83013b6eca4705c35727a695e09890d4
+    sha: de83d90cb1f4ab8f70fbc4d53e928a9d4827bf7b9c990f34f16942729d9c113b
 
   apacheExporter: *apacheExporter
 

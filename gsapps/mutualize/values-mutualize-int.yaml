@@ -159,7 +159,7 @@ mutualize:
     image:
       repository: camptocamp/redirect
       tag: latest
-      sha: c65ff9432c42218bbfc9031704cb9afd841ae803d5343a81156bf9f9b572a4c6
+      sha: e397bb5745c6ffbd6bb67ce3dc8a8c9c64bbee8ab4a5bbe8100c23a385c4137c
 
     resources:
       requests:

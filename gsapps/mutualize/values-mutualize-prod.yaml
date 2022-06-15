@@ -25,7 +25,7 @@ mutualize:
       repository: camptocamp/shared_config_manager
       tag: '3.2'
       atleastOldDays: 20
-      sha: 37e2fa35552ade476387889e1f771f3f336f76bb10742fdea36aee3bd4c6acf7
+      sha: fe97caab814f2157c7ccbf6ec0b44f8475f6cf00b069b9b43107008ff86075cc
 
     env:
       <<: *config-env-base

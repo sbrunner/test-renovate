@@ -24,7 +24,7 @@ mutualize:
     image: &config-image
       repository: camptocamp/shared_config_manager
       tag: '3.2'
-      sha: 1dbbacc0d3945a4e688d99a98f88e6eed28eb917b1fc8021c8baa8e5b729a15f
+      sha: 3b003f2cb7b6a09d66354a2fce88ef57c66b2cb3073ff413206cba98ebc8d5f8
 
     env:
       <<: *config-env-base

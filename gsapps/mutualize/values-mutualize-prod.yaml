@@ -165,7 +165,7 @@ mutualize:
       repository: camptocamp/redirect
       tag: latest
       atleastOldDays: 20
-      sha: 44bd37b1716791beba16343e0b1adc9193d6b999f201db122003906a4448e740
+      sha: 2fad54237225bd10b742b7b8415af4cba3287e828471451524dec2ab7502e218
 
     resources:
       requests:

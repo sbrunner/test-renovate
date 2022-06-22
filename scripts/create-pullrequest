@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $(git status --porcelain) == "" ]]
-then
+if [[ $(git status --porcelain) == "" ]]; then
     echo Nothing to commit
     exit 0
 fi

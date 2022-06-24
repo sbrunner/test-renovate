@@ -3,7 +3,7 @@ geomapfish:
     repository: camptocamp/geomapfishapp-geoportal
     tag: '2.7'
     atleastOldDays: 20
-    sha: 28f04a8a8dca9e751d72977bd375e9bbeb049d39aeca65e9ff51a7f9654ba646
+    sha: 00e772654926c941e8b52b056b10c1100b70fc4ebd7cea6284968426af8db937
 
   alembic:
     image: *geoportal-image
@@ -13,7 +13,7 @@ geomapfish:
       repository: camptocamp/geomapfish-tools
       tag: '2.7'
       atleastOldDays: 20
-      sha: dee663227554d7fcb88bf1194401d2142ef1fc6324fe58683d289573948a0dd8
+      sha: 1d5d518e1745207fd5d5d7b394c618c13e9556a1a74843bf0e14bb0f75f69601
 
   mutualize:
     configUrl: https://geoservices.camptocamp.com/config

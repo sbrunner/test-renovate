@@ -1,2 +1,2 @@
-c2cciutils==1.2.dev20220621145847
+c2cciutils==1.2.0
 ruamel.yaml==0.17.21

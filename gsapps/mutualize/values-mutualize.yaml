@@ -539,7 +539,7 @@ ingress:
       path: /print
       serviceName: print
     printLogs:
-      path: /print-logs
+      path: /print/logs
       serviceName: logs
     redirect:
       path: /redirect

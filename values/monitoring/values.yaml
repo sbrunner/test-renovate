@@ -7,7 +7,7 @@ monitoring:
     image:
       repository: camptocamp/es-ooms-exporter
       tag: master
-      sha: 96914dd93224934901da823adce9bce45667e4fce75cc9ee9d699b9997add2d2
+      sha: 903fc8f095e796e04192b19685ca712f2a41218e09aa646698cf56ba0c33490e
 
     annotations:
       reloader.stakater.com/auto: 'true'

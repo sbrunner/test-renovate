@@ -275,6 +275,8 @@ geomapfish:
 
     annotations:
       reloader.stakater.com/auto: 'true'
+      argocd.argoproj.io/hook: PostSync
+      argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
     podAnnotations:
       co.elastic.logs/enabled: 'true'
 

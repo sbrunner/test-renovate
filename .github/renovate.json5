@@ -22,7 +22,7 @@
   */
   regexManagers: [
     {
-      fileMatch: ['.*.yaml$'],
+      fileMatch: ['\\.yaml$'],
       matchStrings: ["^ +tag: (&[0-9a-z-]+ )?'?(?<currentValue>[^']+)'? # (?<depName>.+)"],
       datasourceTemplate: 'docker',
     },

@@ -44,7 +44,7 @@ mutualize:
     image:
       repository: camptocamp/mapfish_print
       tag: &print-tag '3.28' # camptocamp/mapfish_print
-      sha: 695519eb644a67cbd03e2078193eaabeb939989bede2662fc1b72e6143d6b5d5
+      sha: 620173ee9f9accd71925c66bc5abe8341dff2b1210d73f43b816597f4a7857e9
 
     env:
       SENTRY_RELEASE:

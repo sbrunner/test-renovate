@@ -23,7 +23,7 @@ mutualize:
     replicaCount: 1
     image: &config-image
       repository: camptocamp/shared_config_manager
-      tag: '3.2'
+      tag: '3.2' # camptocamp/shared_config_manager
       sha: a265939e2cef96d38a9df6e23f5e9a3a75134d5047581d5fa9348576b032b794
 
     env:
@@ -83,7 +83,7 @@ mutualize:
     replicaCount: 1
     image:
       repository: camptocamp/mapfish-print-logs
-      tag: '1.3'
+      tag: '1.3' # camptocamp/mapfish-print-logs
       sha: bbf98a77a63975138a22e9bfef4f131e4330dcae21f088a9a1054428f6d74d8d
 
     env:
@@ -103,7 +103,7 @@ mutualize:
   tilecloudchain: &tilecloudchain
     image:
       repository: camptocamp/tilecloud-chain
-      tag: master
+      tag: master # camptocamp/tilecloud-chain
       sha: 42ca91f177274068ae5cd5012422f6cd3ba1d2245c1211435cf1b75e5a863317
 
     env:
@@ -158,7 +158,7 @@ mutualize:
   redirect:
     image:
       repository: camptocamp/redirect
-      tag: latest
+      tag: latest # camptocamp/redirect
       sha: 16ba8bdc5d17e940aa7a9763b4bfeb7a2126bd4d76c06e0edc494b612758d617
 
     resources:

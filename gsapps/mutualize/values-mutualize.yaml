@@ -371,13 +371,13 @@ mutualize:
       SQLALCHEMY_POOL_SIZE:
         value: '2'
       SQLALCHEMY_MAX_OVERFLOW:
-        value: '6'
+        value: '5'
       SQLALCHEMY_SLAVE_POOL_RECYCLE:
         value: '30'
       SQLALCHEMY_SLAVE_POOL_SIZE:
         value: '2'
       SQLALCHEMY_SLAVE_MAX_OVERFLOW:
-        value: '6'
+        value: '10'
       SHARED_CONFIG_MASTER:
         value: /master_config/config.yaml
       VISIBLE_ENTRY_POINT:

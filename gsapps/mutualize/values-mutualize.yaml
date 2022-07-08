@@ -371,7 +371,7 @@ mutualize:
       SQLALCHEMY_POOL_SIZE:
         value: '2'
       SQLALCHEMY_MAX_OVERFLOW:
-        value: '5'
+        value: '10'
       SQLALCHEMY_SLAVE_POOL_RECYCLE:
         value: '30'
       SQLALCHEMY_SLAVE_POOL_SIZE:

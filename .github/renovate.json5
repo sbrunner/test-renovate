@@ -1,7 +1,7 @@
 {
   extends: ['config:base', 'schedule:earlyMondays'],
   'helm-values': {
-    fileMatch: ['(^|/)values\\.yaml$', '(^|/)values-.+\\.yaml$'],
+    fileMatch: ['(^|/)values\\.yaml$', '(^|/)values-.+\\.yaml$', 'deployment\\.yaml$', '(^|/)deployment-.+\\.yaml$'],
   },
   packageRules: [
     /** Separate pull request per path */

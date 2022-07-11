@@ -17,4 +17,17 @@
       dependencyDashboardApproval: true,
     },
   ],
+  /**
+  Update the Docker images.
+  Search for:
+  tag: <version> # <Docker repository>
+  to be tracked by Renobate to search for update
+  */
+  regexManagers: [
+    {
+      fileMatch: ['.yaml$'],
+      matchStrings: [" +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
+      datasourceTemplate: 'docker',
+    },
+  ],
 }

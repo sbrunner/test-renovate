@@ -1,2 +1,0 @@
-c2cciutils==1.2.0
-ruamel.yaml==0.17.21

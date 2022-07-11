@@ -1,7 +1,7 @@
 {
   extends: ['config:base', 'schedule:earlyMondays'],
   'helm-values': {
-    fileMatch: ['(^|/)values.yaml$', '(^|/)values-[a-z0-9]+.yaml$', '^values/.+.yaml$'],
+    fileMatch: ['(^|/)values.yaml$', '(^|/)values-[a-z0-9]+.yaml$'],
   },
   packageRules: [
     /** Separate pull request per path */
@@ -15,28 +15,6 @@
     {
       matchManagers: ['regex'],
       dependencyDashboardApproval: true,
-    },
-  ],
-  /**
-  Update the Docker images.
-  Search for:
-  tag: <version> # <Docker repository>
-  to be tracked by Renobate to search for update
-  */
-  regexManagers: [
-    {
-      fileMatch: ['.yaml$'],
-      matchStrings: [" +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
-      datasourceTemplate: 'docker',
-    },
-    {
-      fileMatch: ['^toto$'],
-      matchStrings: [" +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
-      datasourceTemplate: 'docker',
-    },
-    {
-      fileMatch: ['^download-versions.yaml$'],
-      matchStrings: ['(?<depName>.*): (?<currentValue>.*) # (?<datasource>.*)'],
     },
   ],
 }

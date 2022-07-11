@@ -25,8 +25,8 @@
   */
   regexManagers: [
     {
-      fileMatch: ['.yaml$'],
-      matchStrings: [" +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
+      fileMatch: ['(^|/)values-[a-z0-9]+.yaml$'],
+      matchStrings: [" +tag: '?(?<currentValue>.+)'? # (?<depName>.+)"],
       datasourceTemplate: 'docker',
     },
   ],

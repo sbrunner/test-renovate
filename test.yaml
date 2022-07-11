@@ -1,0 +1,2447 @@
+---
+# Source: gmf-demo/charts/custom-feedback/templates/pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: geomapfish-prod-2-7-custom-feedback
+  labels:
+    app.kubernetes.io/name: custom-feedback
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: custom-feedback
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/geomapfish/templates/pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: geomapfish-prod-2-7-geoportal
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: geoportal
+---
+# Source: gmf-demo/charts/mapserver/templates/pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: geomapfish-prod-2-7-mapserver
+  labels:
+    app.kubernetes.io/name: mapserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mapserver
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/qgisserver/templates/pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: geomapfish-prod-2-7-qgisserver
+  labels:
+    app.kubernetes.io/name: qgisserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qgisserver
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/geomapfish/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: geomapfish-prod-2-7-env
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: env
+data:
+  RELEASE_NAME: geomapfish-prod-2-7
+  GEOPORTAL_IMAGE_TAG: "2.7"
+  ALEMBIC_IMAGE_TAG: "2.7"
+  TOOLS_IMAGE_TAG: "2.7"
+  CONFIG_IMAGE_TAG: "prod-2-7"
+  STATD_IMAGE_TAG: "latest"
+  BUSYBOX_IMAGE_TAG: "latest"
+---
+# Source: gmf-demo/charts/ingress/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: geomapfish-prod-2-7-ingress
+  labels: 
+    helm.sh/chart: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+data:
+  WEB_HOST: geomapfish-demo-2-7.camptocamp.com
+---
+# Source: gmf-demo/charts/custom-feedback/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-custom-feedback
+  labels: 
+    helm.sh/chart: custom-feedback
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: custom-feedback
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+    prometheus: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: custom-feedback
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/geomapfish/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-geoportal
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+    prometheus: 'true'
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+---
+# Source: gmf-demo/charts/geomapfish/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-geoportal-prometheus
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: prometheus
+      protocol: TCP
+      name: prometheus
+  selector:
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+---
+# Source: gmf-demo/charts/geomapfish/templates/tiles-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-tiles
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tiles
+spec:
+  type: ExternalName
+  externalName: mutualize-int-tcc.gs-mutualize.svc.cluster.local
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+---
+# Source: gmf-demo/charts/mapserver/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-mapserver
+  labels: 
+    helm.sh/chart: mapserver
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mapserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+    prometheus: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 9117
+      targetPort: prometheus
+      protocol: TCP
+      name: prometheus
+  selector:
+    app.kubernetes.io/name: mapserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/qgisserver/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: geomapfish-prod-2-7-qgisserver
+  labels: 
+    helm.sh/chart: qgisserver
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qgisserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+    prometheus: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 9117
+      targetPort: prometheus
+      protocol: TCP
+      name: prometheus
+  selector:
+    app.kubernetes.io/name: qgisserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+---
+# Source: gmf-demo/charts/custom-feedback/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-custom-feedback
+  labels: 
+    helm.sh/chart: custom-feedback
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: custom-feedback
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: custom-feedback
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: custom-feedback
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: main
+      annotations:
+        co.elastic.logs/enabled: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      affinity:
+        {}
+      containers:
+        - name: feedback
+          securityContext:
+            {}
+          image: "camptocamp/geomapfishdemo-custom@sha256:0aaaa60701ecfe4dc46dcbb3345dc4eaf88a81e0edf95c95484c3b8616e0ff15"
+          imagePullPolicy: Always
+          env:  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://prod-2-7-c2cgeoportal-geoportal"  
+            - name: "GUNICORN_CMD_ARGS"
+              value: "--bind=:8080 --worker-class=gthread --threads=10 --workers=1 --timeout=120 --max-requests=1000 --max-requests-jitter=100 --worker-tmp-dir=/dev/shm  --limit-request-line=8190"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "SQLALCHEMY_SLAVE_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "sqlalchemyUrl"  
+            - name: "SQLALCHEMY_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "sqlalchemyUrl"  
+            - name: "VISIBLE_WEB_HOST"
+              value: "geomapfish-demo-2-7.camptocamp.com"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 4m
+              memory: 50Mi
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /c2c/health_check
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /c2c/health_check
+              port: http
+            initialDelaySeconds: 2
+            timeoutSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /c2c/health_check
+              port: http
+            initialDelaySeconds: 2
+            timeoutSeconds: 10
+---
+# Source: gmf-demo/charts/geomapfish/templates/alembic-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-alembic
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: alembic
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: alembic
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: geomapfish
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: alembic
+      annotations:
+        co.elastic.logs/enabled: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      initContainers:
+        - name: alembic
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishapp-geoportal@sha256:1cbbe7f3b5f30b63ef1f680c473606a10e341c8a20895f7624374a20d531aa8e"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "C2C_DEBUG_VIEW_ENABLED"
+              value: "1"  
+            - name: "C2C_LOG_VIEW_ENABLED"
+              value: "1"  
+            - name: "C2C_REDIS_DB"
+              value: "$(REDIS_DB)"  
+            - name: "C2C_REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "C2C_REDIS_TIMEOUT"
+              value: "30"  
+            - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
+              value: "30"  
+            - name: "C2C_SQL_PROFILER_ENABLED"
+              value: "1"  
+            - name: "GUNICORN_ACCESS_LOG_FORMAT"
+              value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"  
+            - name: "GUNICORN_CMD_ARGS"
+              value: "--worker-tmp-dir=/dev/shm"  
+            - name: "GUNICORN_LIMIT_REQUEST_LINE"
+              value: "8190"  
+            - name: "GUNICORN_MAX_REQUESTS"
+              value: "2000"  
+            - name: "GUNICORN_MAX_REQUESTS_JITTER"
+              value: "200"  
+            - name: "GUNICORN_THREADS"
+              value: "10"  
+            - name: "GUNICORN_TIMEOUT"
+              value: "30"  
+            - name: "GUNICORN_WORKERS"
+              value: "2"  
+            - name: "LOG_TYPE"
+              value: "json"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "REDIS_DB"
+              value: "1"  
+            - name: "REDIS_HOST"
+              value: "redis"  
+            - name: "REDIS_PORT"
+              value: "26379"  
+            - name: "REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "REDIS_TIMEOUT"
+              value: "30"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_CLIENT_RELEASE"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "ALEMBIC_IMAGE_TAG"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SENTRY_KEY"
+              value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+            - name: "SENTRY_PROJECT"
+              value: "1851011"  
+            - name: "SENTRY_TAG_SERVICE"
+              value: "alembic"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "25"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "C2C_BROADCAST_PREFIX"
+              value: "broadcast_geoportal_$(REDIS_DB)_"  
+            - name: "C2C_REDIS_SENTINELS"
+              value: "$(REDIS_HOST):$(REDIS_PORT)"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 40Mi
+          args:
+            - bash
+            - -c
+            - alembic --name=main upgrade head && alembic --name=static upgrade head
+      containers:
+        - name: sleep
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "busybox:latest"
+          imagePullPolicy: Always
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 4Mi
+            requests:
+              cpu: 1m
+              memory: 80Ki
+          args:
+            - tail
+            - -f
+            - /dev/null
+---
+# Source: gmf-demo/charts/geomapfish/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-geoportal
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: geoportal
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: geoportal
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: geomapfish
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: geoportal
+        aadpodidbinding: gmf
+      annotations:
+        co.elastic.logs/enabled: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - main
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - geomapfish-prod-2-7
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - geomapfish
+            topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishdemo-config@sha256:65037adff35ca77a61968e4af60cd9b154bb1683ca2cef0b177a1a81cdcf923f"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SENTRY_KEY"
+              value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+            - name: "SENTRY_PROJECT"
+              value: "1851011"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "25"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 64Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          args:
+            - bash
+            - -c
+            - cp -a /etc/geomapfish/* /etc/geomapfish-volume/ &&
+              cp -a /usr/local/tomcat/webapps/ROOT/print-apps/* /etc/print-volume/
+          volumeMounts:
+            - mountPath: /etc/geomapfish-volume
+              name: geomapfish
+            - mountPath: /etc/print-volume
+              name: print
+      containers:
+        - name: geoportal
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishapp-geoportal@sha256:1cbbe7f3b5f30b63ef1f680c473606a10e341c8a20895f7624374a20d531aa8e"
+          imagePullPolicy: Always
+          env:  
+            - name: "AUTHTKT_SAMESITE"
+              value:   
+            - name: "AUTHTKT_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  name: "secrets"
+                  key: "AUTHTKT_SECRET"  
+            - name: "AZURE_CONTAINER_NAME"
+              value: "balanced-woodcock"  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "C2C_DB_MAINTENANCE_VIEW_ENABLED"
+              value: "1"  
+            - name: "C2C_DEBUG_VIEW_ENABLED"
+              value: "1"  
+            - name: "C2C_LOG_VIEW_ENABLED"
+              value: "1"  
+            - name: "C2C_REDIS_DB"
+              value: "$(REDIS_DB)"  
+            - name: "C2C_REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "C2C_REDIS_TIMEOUT"
+              value: "30"  
+            - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
+              value: "30"  
+            - name: "C2C_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  name: "secrets"
+                  key: "C2C_SECRET"  
+            - name: "C2C_SQL_PROFILER_ENABLED"
+              value: "1"  
+            - name: "GUNICORN_ACCESS_LOG_FORMAT"
+              value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"  
+            - name: "GUNICORN_CMD_ARGS"
+              value: "--worker-tmp-dir=/dev/shm"  
+            - name: "GUNICORN_LIMIT_REQUEST_LINE"
+              value: "8190"  
+            - name: "GUNICORN_MAX_REQUESTS"
+              value: "2000"  
+            - name: "GUNICORN_MAX_REQUESTS_JITTER"
+              value: "200"  
+            - name: "GUNICORN_THREADS"
+              value: "10"  
+            - name: "GUNICORN_TIMEOUT"
+              value: "30"  
+            - name: "GUNICORN_WORKERS"
+              value: "2"  
+            - name: "LOG_TYPE"
+              value: "json"  
+            - name: "OSM_PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "database"  
+            - name: "OSM_PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "hostname"  
+            - name: "OSM_PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "hostnameSlave"  
+            - name: "OSM_PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "password"  
+            - name: "OSM_PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "port"  
+            - name: "OSM_PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "portSlave"  
+            - name: "OSM_PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "username"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "PRINT_APP"
+              value: "zen-carson-2-7"  
+            - name: "REDIS_DB"
+              value: "1"  
+            - name: "REDIS_HOST"
+              value: "redis"  
+            - name: "REDIS_LOCK_TIMEOUT"
+              value: "180"  
+            - name: "REDIS_PORT"
+              value: "26379"  
+            - name: "REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "REDIS_TIMEOUT"
+              value: "30"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_CLIENT_RELEASE"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "GEOPORTAL_IMAGE_TAG"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SENTRY_KEY"
+              value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+            - name: "SENTRY_PROJECT"
+              value: "1851011"  
+            - name: "SENTRY_TAG_SERVICE"
+              value: "geoportal"  
+            - name: "SENTRY_TRACES_SAMPLE_RATE"
+              value: "0.1"  
+            - name: "SMTP_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "secrets"
+                  key: "SMTP_PASSWORD"  
+            - name: "SMTP_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: "secrets"
+                  key: "SMTP_USER"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "10"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "1"  
+            - name: "SQLALCHEMY_SLAVE_MAX_OVERFLOW"
+              value: "10"  
+            - name: "SQLALCHEMY_SLAVE_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_SLAVE_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "WMTS_URL"
+              value: "https://geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com/tiles/"  
+            - name: "C2C_BROADCAST_PREFIX"
+              value: "broadcast_geoportal_$(REDIS_DB)_"  
+            - name: "C2C_REDIS_SENTINELS"
+              value: "$(REDIS_HOST):$(REDIS_PORT)"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "PRINT_URL"
+              value: "https://mutualize-int.apps.gs-ch-dev.camptocamp.com/print/print/print/$(PRINT_APP)/"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "RASTER_BASE_PATH"
+              value: "/vsiaz/$(AZURE_CONTAINER_NAME)"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 825Mi
+            requests:
+              cpu: 88m
+              memory: 271Mi
+
+          volumeMounts:
+            - mountPath: /etc/geomapfish
+              name: geomapfish
+              readOnly: true
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: print
+              readOnly: true
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          livenessProbe:
+            httpGet:
+              path: "/c2c/health_check?max_level=0"
+              port: http
+            initialDelaySeconds: 9999
+            timeoutSeconds: 30
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: "/c2c/health_check?max_level=0"
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 120
+            periodSeconds: 180
+
+      volumes:
+        - name: geomapfish
+          emptyDir: {}
+        - name: print
+          emptyDir: {}
+---
+# Source: gmf-demo/charts/geomapfish/templates/tools-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-tools
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tools
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: tools
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: geomapfish
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: tools
+        aadpodidbinding: gmf
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: tools
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfish-tools@sha256:1ec36edbb6b75f6e330557708bc7ce9f87345afcd80c21155a62ab7db1365e9a"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "25"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 1m
+              memory: 100Mi
+          args:
+           - sleep
+           - infinity
+---
+# Source: gmf-demo/charts/mapserver/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-mapserver
+  
+  labels: 
+    helm.sh/chart: mapserver
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mapserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mapserver
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: mapserver
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: main
+        aadpodidbinding: gmf
+      annotations:
+        co.elastic.logs/enabled: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      initContainers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishdemo-config@sha256:65037adff35ca77a61968e4af60cd9b154bb1683ca2cef0b177a1a81cdcf923f"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "OSM_PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "database"  
+            - name: "OSM_PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "hostname"  
+            - name: "OSM_PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "hostnameSlave"  
+            - name: "OSM_PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "password"  
+            - name: "OSM_PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "port"  
+            - name: "OSM_PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "portSlave"  
+            - name: "OSM_PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database-osm"
+                  key: "username"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SENTRY_KEY"
+              value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+            - name: "SENTRY_PROJECT"
+              value: "1851011"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "25"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 64Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          args: ['bash', '-c', 'cp -a /etc/mapserver/* /etc/config-volume/']
+          volumeMounts:
+            - mountPath: /etc/config-volume
+              name: configs
+      containers:
+        - name: apache
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/mapserver@sha256:1646f719e7060fba8fb0e712da25b715250fcd002a6612c66a3fc17f7203b843"
+          imagePullPolicy: Always
+          env:  
+            - name: "MAPSERVER_CATCH_SEGV"
+              value: "1"  
+            - name: "MAX_PROCESSES"
+              value: "4"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "SEGFAULT_SIGNALS"
+              value: "all"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 560Mi
+            requests:
+              cpu: 4m
+              memory: 110.5Mi
+          command:
+            - /bin/bash
+          args:
+            - /usr/local/bin/start-server
+          volumeMounts:
+            - mountPath: /etc/mapserver
+              name: configs
+              readOnly: false
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 20
+            timeoutSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 20
+            timeoutSeconds: 10
+        - name: apache-exporter
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "quay.io/lusitaniae/apache-exporter@sha256:266abe2e6932edd5a420499cdab28e7e394aa4a05c175d630dde965cedc9203e"
+          imagePullPolicy: Always
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 1m
+              memory: 10Mi
+          args:
+            - '--scrape_uri=http://geomapfish-prod-2-7-mapserver/server-status-remote?auto'
+          ports:
+            - name: prometheus
+              containerPort: 9117
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: prometheus
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 20
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+---
+# Source: gmf-demo/charts/qgisserver/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geomapfish-prod-2-7-qgisserver
+  
+  labels: 
+    helm.sh/chart: qgisserver
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qgisserver
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qgisserver
+      app.kubernetes.io/instance: geomapfish-prod-2-7
+      app.kubernetes.io/component: main
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: qgisserver
+        app.kubernetes.io/instance: geomapfish-prod-2-7
+        app.kubernetes.io/component: main
+        aadpodidbinding: gmf
+      annotations:
+        co.elastic.logs/enabled: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      initContainers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishdemo-config@sha256:65037adff35ca77a61968e4af60cd9b154bb1683ca2cef0b177a1a81cdcf923f"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "BASICAUTH"
+              value: "false"  
+            - name: "PGDATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "database"  
+            - name: "PGHOST"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostname"  
+            - name: "PGHOST_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "hostnameSlave"  
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "password"  
+            - name: "PGPORT"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "port"  
+            - name: "PGPORT_SLAVE"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "portSlave"  
+            - name: "PGSCHEMA"
+              value: "main_2_7"  
+            - name: "PGSCHEMA_STATIC"
+              value: "static_2_7"  
+            - name: "PGSSLMODE"
+              value: "require"  
+            - name: "PGUSER"
+              valueFrom:
+                secretKeyRef:
+                  name: "database"
+                  key: "username"  
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "SENTRY_HOSTNAME"
+              value: "o330647.ingest.sentry.io"  
+            - name: "SENTRY_KEY"
+              value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+            - name: "SENTRY_PROJECT"
+              value: "1851011"  
+            - name: "SQLALCHEMY_MAX_OVERFLOW"
+              value: "25"  
+            - name: "SQLALCHEMY_POOL_RECYCLE"
+              value: "30"  
+            - name: "SQLALCHEMY_POOL_SIZE"
+              value: "5"  
+            - name: "SRID"
+              value: "2056"  
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"  
+            - name: "VISIBLE_WEB_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-ingress"
+                  key: "WEB_HOST"  
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"  
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"  
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+            - name: "MAPSERVER_URL"
+              value: "http://$(RELEASE_NAME)-mapserver/"  
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"  
+            - name: "SENTRY_URL"
+              value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 64Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          args: ['bash', '-c', 'cp -a /etc/qgisserver/* /etc/config-volume/']
+          volumeMounts:
+            - mountPath: /etc/config-volume
+              name: configs
+      containers:
+        - name: apache
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfish-qgisserver@sha256:d3df113d10a35ba768e05fc00dd7ead721ae1931c7e2a10c9a720c577549741f"
+          imagePullPolicy: Always
+          env:  
+            - name: "AZURE_STORAGE_ACCOUNT"
+              valueFrom:
+                secretKeyRef:
+                  name: "gmf-blob-storage"
+                  key: "storageAccountName"  
+            - name: "C2C_REDIS_DB"
+              value: "$(REDIS_DB)"  
+            - name: "C2C_REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "C2C_REDIS_TIMEOUT"
+              value: "30"  
+            - name: "CPL_VSIL_CURL_CACHE_SIZE"
+              value: "128000000"  
+            - name: "CPL_VSIL_CURL_USE_CACHE"
+              value: "TRUE"  
+            - name: "CPL_VSIL_CURL_USE_HEAD"
+              value: "FALSE"  
+            - name: "FCGID_IO_TIMEOUT"
+              value: "120"  
+            - name: "GDAL_DISABLE_READDIR_ON_OPEN"
+              value: "TRUE"  
+            - name: "MAX_CACHE_LAYERS"
+              value: "100"  
+            - name: "MAX_PROCESSES"
+              value: "4"  
+            - name: "MAX_REQUESTS_PER_PROCESS"
+              value: "500"  
+            - name: "PGSERVICEFILE"
+              value: "/etc/qgisserver/pg_service.conf"  
+            - name: "QGIS_AUTH_DB_DIR_PATH"
+              value: "/etc/qgisserver/"  
+            - name: "QGIS_CUSTOM_CONFIG_PATH"
+              value: "/tmp"  
+            - name: "QGIS_SERVER_API_WFS3_MAX_LIMIT"
+              value: "10000"  
+            - name: "QGIS_SERVER_CACHE_SIZE"
+              value: "60"  
+            - name: "QGIS_SERVER_DISABLE_GETPRINT"
+              value: "TRUE"  
+            - name: "QGIS_SERVER_IGNORE_BAD_LAYERS"
+              value: "TRUE"  
+            - name: "QGIS_SERVER_LANDING_PAGE_PREFIX"
+              value: "/mapserv_proxy/qgis"  
+            - name: "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES"
+              value: "/etc/qgisserver/"  
+            - name: "QGIS_SERVER_LOG_LEVEL"
+              value: "2"  
+            - name: "QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE"
+              value: "fr"  
+            - name: "QGIS_SERVER_PARALLEL_RENDERING"
+              value: "FALSE"  
+            - name: "QGIS_SERVER_TRUST_LAYER_METADATA"
+              value: "TRUE"  
+            - name: "QGIS_SERVER_WMS_MAX_HEIGHT"
+              value: "5000"  
+            - name: "QGIS_SERVER_WMS_MAX_WIDTH"
+              value: "5000"  
+            - name: "REDIS_DB"
+              value: "1"  
+            - name: "REDIS_HOST"
+              value: "redis"  
+            - name: "REDIS_PORT"
+              value: "26379"  
+            - name: "REDIS_SERVICENAME"
+              value: "mymaster"  
+            - name: "REDIS_TIMEOUT"
+              value: "30"  
+            - name: "RELEASE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: "geomapfish-prod-2-7-env"
+                  key: "RELEASE_NAME"  
+            - name: "C2C_BROADCAST_PREFIX"
+              value: "broadcast_geoportal_$(REDIS_DB)_"  
+            - name: "C2C_REDIS_SENTINELS"
+              value: "$(REDIS_HOST):$(REDIS_PORT)"  
+            - name: "GEOMAPFISH_ACCESSCONTROL_BASE_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 1300Mi
+            requests:
+              cpu: 12.5m
+              memory: 113Mi
+          volumeMounts:
+            - mountPath: /etc/qgisserver
+              name: configs
+              readOnly: false
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 300
+          readinessProbe:
+            httpGet:
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 300
+          startupProbe:
+            httpGet:
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgs
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 300
+        - name: apache-exporter
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "quay.io/lusitaniae/apache-exporter@sha256:266abe2e6932edd5a420499cdab28e7e394aa4a05c175d630dde965cedc9203e"
+          imagePullPolicy: Always
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 1m
+              memory: 10Mi
+          args:
+            - '--scrape_uri=http://geomapfish-prod-2-7-qgisserver/server-status-remote?auto'
+          ports:
+            - name: prometheus
+              containerPort: 9117
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: prometheus
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 20
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+---
+# Source: gmf-demo/charts/fts-cron/templates/cronjob.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: geomapfish-prod-2-7-fts-cron
+  labels: 
+    helm.sh/chart: fts-cron
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: fts-cron
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+spec:
+  schedule: "35 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels: 
+            app.kubernetes.io/name: fts-cron
+            app.kubernetes.io/instance: geomapfish-prod-2-7
+            app.kubernetes.io/component: main
+          annotations:
+            co.elastic.logs/enabled: "true"
+        spec:
+          serviceAccountName: default
+          securityContext:
+            {}
+          affinity:
+            {}
+          restartPolicy: Never
+          initContainers:
+            - name: config
+              securityContext:
+                {}
+              image: "camptocamp/geomapfishdemo-config@sha256:65037adff35ca77a61968e4af60cd9b154bb1683ca2cef0b177a1a81cdcf923f"
+              imagePullPolicy: Always
+              env:  
+                - name: "AZURE_STORAGE_ACCOUNT"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "gmf-blob-storage"
+                      key: "storageAccountName"  
+                - name: "BASICAUTH"
+                  value: "false"  
+                - name: "PGDATABASE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "database"  
+                - name: "PGHOST"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "hostname"  
+                - name: "PGHOST_SLAVE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "hostnameSlave"  
+                - name: "PGPASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "password"  
+                - name: "PGPORT"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "port"  
+                - name: "PGPORT_SLAVE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "portSlave"  
+                - name: "PGSCHEMA"
+                  value: "main_2_7"  
+                - name: "PGSCHEMA_STATIC"
+                  value: "static_2_7"  
+                - name: "PGSSLMODE"
+                  value: "require"  
+                - name: "PGUSER"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "username"  
+                - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+                  value: "30000"  
+                - name: "RELEASE_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: "geomapfish-prod-2-7-env"
+                      key: "RELEASE_NAME"  
+                - name: "SENTRY_HOSTNAME"
+                  value: "o330647.ingest.sentry.io"  
+                - name: "SENTRY_KEY"
+                  value: "8dfa6c72fcad48c487c6a89b22ce581b"  
+                - name: "SENTRY_PROJECT"
+                  value: "1851011"  
+                - name: "SQLALCHEMY_MAX_OVERFLOW"
+                  value: "25"  
+                - name: "SQLALCHEMY_POOL_RECYCLE"
+                  value: "30"  
+                - name: "SQLALCHEMY_POOL_SIZE"
+                  value: "5"  
+                - name: "SRID"
+                  value: "2056"  
+                - name: "VISIBLE_ENTRY_POINT"
+                  value: "/"  
+                - name: "VISIBLE_WEB_HOST"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: "geomapfish-prod-2-7-ingress"
+                      key: "WEB_HOST"  
+                - name: "VISIBLE_WEB_PROTOCOL"
+                  value: "https"  
+                - name: "GEOPORTAL_INTERNAL_URL"
+                  value: "http://$(RELEASE_NAME)-geoportal/"  
+                - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+                  value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_DATA_SUBSELECT"
+                  value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_JOIN_TABLES"
+                  value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+                - name: "MAPSERVER_JOIN_WHERE"
+                  value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_URL"
+                  value: "http://$(RELEASE_NAME)-mapserver/"  
+                - name: "PGOPTIONS"
+                  value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+                - name: "QGISSERVER_URL"
+                  value: "http://$(RELEASE_NAME)-qgisserver/"  
+                - name: "SENTRY_URL"
+                  value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+                - name: "TILECLOUDCHAIN_INTERNAL_URL"
+                  value: "http://$(RELEASE_NAME)-tilecloudchain/"
+              terminationMessagePolicy: FallbackToLogsOnError
+              resources:
+                limits:
+                  memory: 64Mi
+                requests:
+                  cpu: 1m
+                  memory: 16Mi
+              args: 
+                - bash
+                - -c
+                - cp -a /etc/geomapfish/* /etc/geomapfish-volume/
+              volumeMounts: 
+                - mountPath: /etc/geomapfish-volume
+                  name: configs
+          containers:
+            - name: fts-cron
+              securityContext:
+                {}
+              image: "camptocamp/geomapfishapp-geoportal@sha256:1cbbe7f3b5f30b63ef1f680c473606a10e341c8a20895f7624374a20d531aa8e"
+              imagePullPolicy: Always
+              env:  
+                - name: "AUTHTKT_SECRET"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "secrets"
+                      key: "AUTHTKT_SECRET"  
+                - name: "AZURE_STORAGE_ACCOUNT"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "gmf-blob-storage"
+                      key: "storageAccountName"  
+                - name: "BASICAUTH"
+                  value: "false"  
+                - name: "C2C_DB_MAINTENANCE_VIEW_ENABLED"
+                  value: "1"  
+                - name: "C2C_DEBUG_VIEW_ENABLED"
+                  value: "1"  
+                - name: "C2C_LOG_VIEW_ENABLED"
+                  value: "1"  
+                - name: "C2C_REDIS_DB"
+                  value: "$(REDIS_DB)"  
+                - name: "C2C_REDIS_SERVICENAME"
+                  value: "mymaster"  
+                - name: "C2C_REDIS_TIMEOUT"
+                  value: "30"  
+                - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
+                  value: "30"  
+                - name: "C2C_SECRET"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "secrets"
+                      key: "C2C_SECRET"  
+                - name: "C2C_SQL_PROFILER_ENABLED"
+                  value: "1"  
+                - name: "GUNICORN_ACCESS_LOG_FORMAT"
+                  value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"  
+                - name: "GUNICORN_CMD_ARGS"
+                  value: "--worker-tmp-dir=/dev/shm"  
+                - name: "GUNICORN_LIMIT_REQUEST_LINE"
+                  value: "8190"  
+                - name: "GUNICORN_MAX_REQUESTS"
+                  value: "2000"  
+                - name: "GUNICORN_MAX_REQUESTS_JITTER"
+                  value: "200"  
+                - name: "GUNICORN_THREADS"
+                  value: "10"  
+                - name: "GUNICORN_TIMEOUT"
+                  value: "30"  
+                - name: "GUNICORN_WORKERS"
+                  value: "2"  
+                - name: "LOG_TYPE"
+                  value: "json"  
+                - name: "PGDATABASE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "database"  
+                - name: "PGHOST"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "hostname"  
+                - name: "PGHOST_SLAVE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "hostnameSlave"  
+                - name: "PGPASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "password"  
+                - name: "PGPORT"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "port"  
+                - name: "PGPORT_SLAVE"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "portSlave"  
+                - name: "PGSSLMODE"
+                  value: "require"  
+                - name: "PGUSER"
+                  valueFrom:
+                    secretKeyRef:
+                      name: "database"
+                      key: "username"  
+                - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+                  value: "30000"  
+                - name: "REDIS_DB"
+                  value: "1"  
+                - name: "REDIS_HOST"
+                  value: "redis"  
+                - name: "REDIS_LOCK_TIMEOUT"
+                  value: "180"  
+                - name: "REDIS_PORT"
+                  value: "26379"  
+                - name: "REDIS_SERVICENAME"
+                  value: "mymaster"  
+                - name: "REDIS_TIMEOUT"
+                  value: "30"  
+                - name: "RELEASE_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: "geomapfish-prod-2-7-env"
+                      key: "RELEASE_NAME"  
+                - name: "SENTRY_CLIENT_RELEASE"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: "geomapfish-prod-2-7-env"
+                      key: "GEOPORTAL_IMAGE_TAG"  
+                - name: "SENTRY_HOSTNAME"
+                  value: "o330647.ingest.sentry.io"  
+                - name: "SENTRY_TAG_SERVICE"
+                  value: "geoportal"  
+                - name: "SENTRY_TRACES_SAMPLE_RATE"
+                  value: "0.1"  
+                - name: "SQLALCHEMY_MAX_OVERFLOW"
+                  value: "10"  
+                - name: "SQLALCHEMY_POOL_RECYCLE"
+                  value: "30"  
+                - name: "SQLALCHEMY_POOL_SIZE"
+                  value: "1"  
+                - name: "SQLALCHEMY_SLAVE_MAX_OVERFLOW"
+                  value: "10"  
+                - name: "SQLALCHEMY_SLAVE_POOL_RECYCLE"
+                  value: "30"  
+                - name: "SQLALCHEMY_SLAVE_POOL_SIZE"
+                  value: "5"  
+                - name: "SRID"
+                  value: "2056"  
+                - name: "VISIBLE_ENTRY_POINT"
+                  value: "/"  
+                - name: "VISIBLE_WEB_HOST"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: "geomapfish-prod-2-7-ingress"
+                      key: "WEB_HOST"  
+                - name: "VISIBLE_WEB_PROTOCOL"
+                  value: "https"  
+                - name: "C2C_BROADCAST_PREFIX"
+                  value: "broadcast_geoportal_$(REDIS_DB)_"  
+                - name: "C2C_REDIS_SENTINELS"
+                  value: "$(REDIS_HOST):$(REDIS_PORT)"  
+                - name: "GEOPORTAL_INTERNAL_URL"
+                  value: "http://$(RELEASE_NAME)-geoportal/"  
+                - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+                  value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_DATA_SUBSELECT"
+                  value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_JOIN_TABLES"
+                  value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"  
+                - name: "MAPSERVER_JOIN_WHERE"
+                  value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"  
+                - name: "MAPSERVER_URL"
+                  value: "http://$(RELEASE_NAME)-mapserver/"  
+                - name: "PGOPTIONS"
+                  value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"  
+                - name: "QGISSERVER_URL"
+                  value: "http://$(RELEASE_NAME)-qgisserver/"  
+                - name: "RASTER_BASE_PATH"
+                  value: "/vsiaz/$(AZURE_CONTAINER_NAME)"  
+                - name: "SENTRY_URL"
+                  value: "https://$(SENTRY_KEY)@$(SENTRY_HOSTNAME)/$(SENTRY_PROJECT)/"  
+                - name: "TILECLOUDCHAIN_INTERNAL_URL"
+                  value: "http://$(RELEASE_NAME)-tilecloudchain/"
+              terminationMessagePolicy: FallbackToLogsOnError
+              resources:
+                limits:
+                  memory: 425Mi
+                requests:
+                  cpu: 88m
+                  memory: 271Mi
+              args:
+                - theme2fts
+              volumeMounts:
+                - mountPath: /etc/geomapfish
+                  name: configs
+                  readOnly: true
+          volumes:
+          - emptyDir: {}
+            name: configs
+---
+# Source: gmf-demo/charts/ingress/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: geomapfish-prod-2-7-ingress-main
+  labels: 
+    helm.sh/chart: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+  annotations:
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+# Add tls only if tls is not set to false.
+# With resent version of helm it should be:
+# if or ( not ( hasKey $ingress_host_group "tls" ) ) ( not ( eq $ingress_host_group.tls false ) )
+# without else section.
+  tls:
+    - hosts:
+        - geomapfish-demo-2-7.camptocamp.com
+      secretName: geomapfish-prod-2-7-ingress-main
+  rules:
+    - host: geomapfish-demo-2-7.camptocamp.com
+      http:
+        paths:
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-custom-feedback
+                port:
+                  number: 80
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-geoportal
+                port:
+                  number: 80
+          - path: "/tiles/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-tiles
+                port:
+                  number: 80
+---
+# Source: gmf-demo/charts/ingress/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: geomapfish-prod-2-7-ingress-test
+  labels: 
+    helm.sh/chart: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: main
+  annotations:
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-dnsonly
+    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+# Add tls only if tls is not set to false.
+# With resent version of helm it should be:
+# if or ( not ( hasKey $ingress_host_group "tls" ) ) ( not ( eq $ingress_host_group.tls false ) )
+# without else section.
+  tls:
+    - hosts:
+        - geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+        - geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+        - geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+      secretName: geomapfish-prod-2-7-ingress-test
+  rules:
+    - host: geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com
+      http:
+        paths:
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-custom-feedback
+                port:
+                  number: 80
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-geoportal
+                port:
+                  number: 80
+          - path: "/tiles/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-tiles
+                port:
+                  number: 80
+    - host: geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com
+      http:
+        paths:
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-custom-feedback
+                port:
+                  number: 80
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-geoportal
+                port:
+                  number: 80
+          - path: "/tiles/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-tiles
+                port:
+                  number: 80
+    - host: geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com
+      http:
+        paths:
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-custom-feedback
+                port:
+                  number: 80
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-geoportal
+                port:
+                  number: 80
+          - path: "/tiles/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-prod-2-7-tiles
+                port:
+                  number: 80
+---
+# Source: gmf-demo/charts/geomapfish/templates/github-webhooks.yaml
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
+metadata:
+  name: geomapfish-prod-2-7-tilecloud
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+spec:
+  repository: camptocamp/demo_geomapfish
+  url: to-fill/1/refresh/tilecloudchain-demo-2-7-print/
+  contentType: json
+---
+# Source: gmf-demo/charts/geomapfish/templates/github-webhooks.yaml
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
+metadata:
+  name: geomapfish-prod-2-7-zen-carso
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: zen-carson-2-7
+spec:
+  repository: camptocamp/demo_geomapfish
+  url: to-fill/1/refresh/zen-carson-2-7-print/
+  contentType: json
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-sharedconfig.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-tilecloud
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+    mutualize-sharedconfig: 'true'
+spec:
+  name: tilecloudchain-demo-2-7
+  content:
+      type: git
+      repo: git@github.com:camptocamp/demo_geomapfish.git
+      branch: prod-2-7
+      key: ENC[AES256_GCM,data:GXIcwxIGOVN76co=,iv:76rXy1lbwtJK7/cJ71JP3iN7QByti8jD7Tlct2lXqNY=,tag:EE2WLSWowLuQipT8BRyIGA==,type:str]
+      sub_dir: tilegeneration
+      tags:
+        - tilecloudchain
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            MAPSERVER_URL: http://geomapfish-prod-2-7-mapserver.gs-gmf-demo.svc.cluster.local/
+            TILEGENERATION_AZURE_CONTAINER: smashing-panther
+            VISIBLE_ENTRY_POINT: /
+            VISIBLE_WEB_HOST: geomapfish-demo-2-7.camptocamp.com
+            VISIBLE_WEB_PROTOCOL: https
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-sharedconfig.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-zen-carso
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: zen-carson-2-7
+    mutualize-sharedconfig: 'true'
+spec:
+  name: zen-carson-2-7
+  content:
+      type: git
+      repo: git@github.com:camptocamp/demo_geomapfish.git
+      branch: prod-2-7
+      key: ENC[AES256_GCM,data:GXIcwxIGOVN76co=,iv:76rXy1lbwtJK7/cJ71JP3iN7QByti8jD7Tlct2lXqNY=,tag:EE2WLSWowLuQipT8BRyIGA==,type:str]
+      sub_dir: print/print-apps/geomapfish
+      tags:
+        - print
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            AWS_ACCESS_KEY_ID: ENC[AES256_GCM,data:0yt7N1nz4BQE+dctxOpsHdn5SBc7wkC5HWbS,iv:Q9aQzgbo25kpzqhbBYkNWO2a4KoHZZEYkIaKIZjXRQU=,tag:KMye/Ci7qU4PGfcOUs53FA==,type:str]
+            AWS_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:+YIIUp/H1iOH9wzVmIX4vFxwBy0V7usJKwdoIxzEXJZPanSAVQZOqzGWag==,iv:on53VUvwllMOV3nV/vXJsytZwAGsHQX1E3PHUy265Ig=,tag:QCuHHrXsBzrdgUett6JCvA==,type:str]
+            SMTP_PASSWORD: ENC[AES256_GCM,data:sSaH6GzpnqfpsQR21h/Jq33hRSrOrN0Ix4uZi9TkOrbzp/atlwVTMzVmJxI=,iv:6ByPKj8Bqpwf2gOtH9/fUf8REaM88LawsEzsgdM+KNk=,tag:ZiLxycCq/+4vdOouH44+Eg==,type:str]
+            SMTP_USER: ENC[AES256_GCM,data:ImbrzYcpB2yA/SN5pLcR/RLz9FI=,iv:Z71q3jw6qlAG38KF2zW4keOu2lpzbV+TzIsPKatzokY=,tag:2dr1S9eO0V6zl7HDxaT87A==,type:str]
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-tilecloud-hosts-main
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-demo-2-7-main
+  content:
+    geomapfish-demo-2-7.camptocamp.com: /etc/tilecloudchain-configs/tilecloudchain-demo-2-7/config.yaml
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-tilecloud-hosts-test
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-demo-2-7-test
+  content:
+    geomapfish-demo-2-7.apps.gs-ch-dev.camptocamp.com: /etc/tilecloudchain-configs/tilecloudchain-demo-2-7/config.yaml
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-tilecloud-hosts-blue
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-demo-2-7-blue
+  content:
+    geomapfish-demo-2-7.apps.blue.gs-ch-dev.camptocamp.com: /etc/tilecloudchain-configs/tilecloudchain-demo-2-7/config.yaml
+---
+# Source: gmf-demo/charts/geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: geomapfish-prod-2-7-tilecloud-hosts-green
+  labels: 
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: geomapfish-prod-2-7
+    app.kubernetes.io/component: tilecloudchain-demo-2-7
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-demo-2-7-green
+  content:
+    geomapfish-demo-2-7.apps.green.gs-ch-dev.camptocamp.com: /etc/tilecloudchain-configs/tilecloudchain-demo-2-7/config.yaml

@@ -31,5 +31,9 @@
       matchStrings: ["^ +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
       datasourceTemplate: 'docker',
     },
+    {
+      fileMatch: ['^download-versions.yaml$'],
+      matchStrings: ['(?<depName>.*): (?<currentValue>.*) # (?<datasource>.*)'],
+    },
   ],
 }

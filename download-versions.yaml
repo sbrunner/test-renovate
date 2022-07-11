@@ -1,0 +1,14 @@
+# https://docs.renovatebot.com/modules/datasource/#github-releases-datasource
+k3d-io/k3d: v5.4.3 # github-releases
+k3s-io/k3s: v1.24.1+k3s1 # github-releases
+derailed/k9s: v0.25.18 # github-releases
+helm/helm: v3.9.0 # github-releases
+snyk/cli: v1.953.0 # github-releases
+kubernetes/kubernetes: v1.24.2 # github-releases
+mozilla/sops: v3.7.3 # github-releases
+aquasecurity/trivy: v0.29.1 # github-releases
+gopasspw/gopass: v1.14.3 # github-releases
+JOSM/josm: JOSM release 18427-tested # github-releases
+hadolint/hadolint: v2.10.0 # github-releases
+transifex/cli: v1.2.0 # github-releases
+cli/cli: v2.13.0 # github-releases

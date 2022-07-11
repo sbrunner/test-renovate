@@ -26,5 +26,10 @@
       matchStrings: ["^ +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
       datasourceTemplate: 'docker',
     },
+    {
+      fileMatch: ['^toto$'],
+      matchStrings: ["^ +tag:.*(?<currentValue>.+)'? # (?<depName>.+)"],
+      datasourceTemplate: 'docker',
+    },
   ],
 }

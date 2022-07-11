@@ -1,7 +1,7 @@
 {
   extends: ['config:base', 'schedule:earlyMondays'],
   'helm-values': {
-    fileMatch: ['(^|/)values.yaml$', '(^|/)values-[a-z0-9]+.yaml$'],
+    fileMatch: ['(^|/)values.yaml$', '.yaml$'],
   },
   packageRules: [
     /** Separate pull request per path */
@@ -25,7 +25,7 @@
   */
   regexManagers: [
     {
-      fileMatch: ['(^|/)values-[a-z0-9]+.yaml$'],
+      fileMatch: ['.yaml$'],
       matchStrings: [" +tag: '?(?<currentValue>.+)'? # (?<depName>.+)"],
       datasourceTemplate: 'docker',
     },

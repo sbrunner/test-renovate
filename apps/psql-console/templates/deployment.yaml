@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: psql-console
-          image: ghcr.io/camptocamp/postgres:12-postgis-3
+          image: ghcr.io/camptocamp/postgres:14-postgis-3
           command:
             - /bin/bash
             - -c

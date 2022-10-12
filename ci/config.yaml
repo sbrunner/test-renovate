@@ -20,3 +20,8 @@ audit:
       - CWE-295 # Improper Certificate Validation
       - CWE-346 # Origin Validation Error
       - CWE-125 # Out-of-bounds Read
+
+  snyk:
+    files_no_install:
+      - ci/requirements.txt
+      - docker/qgisserver/requirements.txt

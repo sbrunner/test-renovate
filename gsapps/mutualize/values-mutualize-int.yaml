@@ -43,7 +43,7 @@ mutualize:
     replicaCount: 1
     image:
       repository: camptocamp/mapfish_print
-      tag: &print-tag '3.28' # camptocamp/mapfish_print
+      tag: &print-tag '3.30' # camptocamp/mapfish_print
       sha: 620173ee9f9accd71925c66bc5abe8341dff2b1210d73f43b816597f4a7857e9
 
     env:

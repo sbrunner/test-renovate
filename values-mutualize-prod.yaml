@@ -23,7 +23,7 @@ mutualize:
     replicaCount: 1
     image: &config-image
       repository: camptocamp/shared_config_manager
-      tag: '3.2' # camptocamp/shared_config_manager
+      tag: '3.4' # camptocamp/shared_config_manager
       atleastOldDays: 20
       sha: 285c0b1421172a03607b463dfa2a7cef46a4b3f779a59f697a41477f7e4dafbe
 

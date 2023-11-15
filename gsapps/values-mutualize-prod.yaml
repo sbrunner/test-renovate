@@ -104,7 +104,7 @@ mutualize:
   tilecloudchain: &tilecloudchain
     image:
       repository: camptocamp/tilecloud-chain
-      tag: '1.17' # camptocamp/tilecloud-chain
+      tag: '1.20' # camptocamp/tilecloud-chain
       atleastOldDays: 20
       sha: 044ecc51685b293891a46bd2c9dcc793d3a65e6ea49e759a251951827b7be0ef
 
